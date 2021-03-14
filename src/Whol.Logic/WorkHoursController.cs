@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Whol.Logic
 {
@@ -18,6 +20,42 @@ namespace Whol.Logic
             _storage = storage;
             _userManager = userManager;
             _user = user;
+            var loadingResult = LoadTodayClosedWorkTime(storage);
+            _todayClosedWorkTime = loadingResult.closedTime;
+            _lastStart = loadingResult.lastStart;
+            IsWorking = loadingResult.isWorking;
+        }
+
+        private (TimeSpan closedTime, DateTime lastStart, bool isWorking) LoadTodayClosedWorkTime(IStorage storage)
+        {
+            var lastStart = DateTime.MinValue;
+            var closedWorkTime = TimeSpan.Zero;
+            var isWorking = false;
+
+            foreach (var whEvent in storage.LoadEvents())
+            {
+                if (whEvent.Time < DateTime.Today)
+                    continue;
+
+                switch (whEvent.EventType)
+                {
+                    case WhEventType.Created:
+                        break;
+                    case WhEventType.Start:
+                        lastStart = whEvent.Time;
+                        isWorking = true;
+                        break;
+                    case WhEventType.Stop:
+                        closedWorkTime += whEvent.Time - lastStart;
+                        isWorking = false;
+                        break;
+                    case WhEventType.Modify:
+                        break;
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            return (closedWorkTime, lastStart, isWorking);
         }
 
         public bool IsWorking { get; private set; }

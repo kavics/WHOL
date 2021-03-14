@@ -4,19 +4,31 @@ using System.Text;
 
 namespace Whol.Logic.Tests.Implementations
 {
+    /// <summary>
+    /// IStorage stub
+    /// </summary>
     public class TestStorage : IStorage
     {
-        public IEnumerable<WhEvent> LoadLastDayEvents()
+        private IEnumerable<WhEvent> _lastDayEvents;
+        private IEnumerable<Holiday> _holidays;
+
+        public TestStorage(IEnumerable<WhEvent> lastDayEvents, IEnumerable<Holiday> holidays)
         {
-            throw new NotImplementedException();
+            _lastDayEvents = lastDayEvents;
+            _holidays = holidays;
+        }
+
+        public IEnumerable<WhEvent> LoadEvents()
+        {
+            return _lastDayEvents ?? new WhEvent[0];
         }
 
         public IEnumerable<Holiday> LoadHolidays()
         {
-            throw new NotImplementedException();
+            return _holidays ?? new Holiday[0];
         }
 
-        public void SaveEvent(WhEvent whEvent)
+        public void SaveEvents(IEnumerable<WhEvent> whEvent)
         {
             throw new NotImplementedException();
         }
