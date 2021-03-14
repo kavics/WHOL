@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Whol.Logic.Tests.Implementations;
@@ -207,6 +208,62 @@ namespace Whol.Logic.Tests
 
             // ASSERT
             Assert.AreEqual(TimeSpan.FromMinutes(5.0d), controller.GetTodayWorkTime());
+        }
+
+        [TestMethod]
+        public void SaveStart()
+        {
+            var time = new TestTime {Now = DateTime.Now};
+            var storage = new TestStorage(null, null);
+            var controller = CreateController(time, storage);
+
+            // ACTION
+            controller.StartWork();
+
+            // ASSERT
+            Assert.IsTrue(storage.EventsSaved);
+        }
+        [TestMethod]
+        public void SaveStop()
+        {
+            var time0 = DateTime.Today;
+            var time1 = time0.AddMinutes(3.0d);
+            var time = new TestTime { Now = time0 };
+            var storage = new TestStorage(null, null);
+            var controller = CreateController(time, storage);
+            controller.StartWork();
+            time.Now = time1;
+            storage.EventsSaved = false;
+
+            // ACTION
+            controller.StopWork();
+
+            // ASSERT
+            Assert.IsTrue(storage.EventsSaved);
+        }
+        [TestMethod]
+        public void SaveOnePeriod()
+        {
+            var time0 = DateTime.Today;
+            var time1 = time0.AddMinutes(3.0d);
+            var time = new TestTime();
+            var storage = new TestStorage(null, null);
+            var controller = CreateController(time, storage);
+            storage.EventsSaved = false;
+
+            // ACTION
+            time.Now = time0;
+            controller.StartWork();
+            time.Now = time1;
+            controller.StopWork();
+
+            // ASSERT
+            var events = storage.LoadEvents().ToArray();
+            Assert.AreEqual(2, events.Length);
+            Assert.AreEqual(time0, events[0].Time);
+            Assert.AreEqual(WhEventType.Start, events[0].EventType);
+            Assert.AreEqual(time1, events[1].Time);
+            Assert.AreEqual(WhEventType.Stop, events[1].EventType);
         }
     }
 }

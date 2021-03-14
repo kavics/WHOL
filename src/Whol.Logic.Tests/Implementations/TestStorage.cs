@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Utilities;
 
 namespace Whol.Logic.Tests.Implementations
 {
@@ -12,6 +13,11 @@ namespace Whol.Logic.Tests.Implementations
         private IEnumerable<WhEvent> _lastDayEvents;
         private IEnumerable<Holiday> _holidays;
 
+        public bool EventsLoaded { get; set; }
+        public bool HolidaysLoaded { get; set; }
+        public bool EventsSaved { get; set; }
+        public bool HolidaysSaved { get; set; }
+
         public TestStorage(IEnumerable<WhEvent> lastDayEvents, IEnumerable<Holiday> holidays)
         {
             _lastDayEvents = lastDayEvents;
@@ -20,22 +26,25 @@ namespace Whol.Logic.Tests.Implementations
 
         public IEnumerable<WhEvent> LoadEvents()
         {
+            EventsLoaded = true;
             return _lastDayEvents ?? new WhEvent[0];
         }
 
         public IEnumerable<Holiday> LoadHolidays()
         {
+            HolidaysLoaded = true;
             return _holidays ?? new Holiday[0];
         }
 
         public void SaveEvents(IEnumerable<WhEvent> whEvent)
         {
-            throw new NotImplementedException();
+            _lastDayEvents = whEvent;
+            EventsSaved = true;
         }
 
         public void SaveHolidays(IEnumerable<Holiday> holidays)
         {
-            throw new NotImplementedException();
+            HolidaysSaved = true;
         }
     }
 }

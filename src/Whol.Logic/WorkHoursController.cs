@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Whol.Logic
 {
     public class WorkHoursController : IWorkHoursController
     {
+        private List<WhEvent> _whEvents;
         private TimeSpan _todayClosedWorkTime;
         private DateTime _lastStart;
 
@@ -20,19 +23,18 @@ namespace Whol.Logic
             _storage = storage;
             _userManager = userManager;
             _user = user;
-            var loadingResult = LoadTodayClosedWorkTime(storage);
-            _todayClosedWorkTime = loadingResult.closedTime;
-            _lastStart = loadingResult.lastStart;
-            IsWorking = loadingResult.isWorking;
+            Initialize();
         }
 
-        private (TimeSpan closedTime, DateTime lastStart, bool isWorking) LoadTodayClosedWorkTime(IStorage storage)
+        private void Initialize()
         {
+            _whEvents = _storage.LoadEvents().ToList();
+
             var lastStart = DateTime.MinValue;
-            var closedWorkTime = TimeSpan.Zero;
+            var closedTime = TimeSpan.Zero;
             var isWorking = false;
 
-            foreach (var whEvent in storage.LoadEvents())
+            foreach (var whEvent in _whEvents)
             {
                 if (whEvent.Time < DateTime.Today)
                     continue;
@@ -46,7 +48,7 @@ namespace Whol.Logic
                         isWorking = true;
                         break;
                     case WhEventType.Stop:
-                        closedWorkTime += whEvent.Time - lastStart;
+                        closedTime += whEvent.Time - lastStart;
                         isWorking = false;
                         break;
                     case WhEventType.Modify:
@@ -55,7 +57,9 @@ namespace Whol.Logic
                 }
             }
 
-            return (closedWorkTime, lastStart, isWorking);
+            _todayClosedWorkTime = closedTime;
+            _lastStart = lastStart;
+            IsWorking = isWorking;
         }
 
         public bool IsWorking { get; private set; }
@@ -66,12 +70,16 @@ namespace Whol.Logic
         {
             _lastStart = _time.Now;
             IsWorking = true;
+            _whEvents.Add(new WhEvent{Time = _time.Now, EventType = WhEventType.Start});
+            _storage.SaveEvents(_whEvents);
         }
 
         public void StopWork()
         {
             _todayClosedWorkTime += _time.Now - _lastStart;
             IsWorking = false;
+            _whEvents.Add(new WhEvent { Time = _time.Now, EventType = WhEventType.Stop });
+            _storage.SaveEvents(_whEvents);
         }
 
         public TimeSpan GetTodayWorkTime()
