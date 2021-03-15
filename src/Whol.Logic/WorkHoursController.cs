@@ -65,7 +65,6 @@ namespace Whol.Logic
         }
 
         public bool IsWorking { get; private set; }
-        public TimeSpan[] LastDaysWorkTime { get; }
 
         public void StartWork()
         {
