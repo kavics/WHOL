@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Whol.Logic
 {
     public class WorkHoursController : IWorkHoursController
     {
         private List<WhEvent> _whEvents;
+        private List<Holiday> _holidays;
+
         private TimeSpan _todayClosedWorkTime;
         private DateTime _lastStart;
 
@@ -28,13 +31,25 @@ namespace Whol.Logic
 
         private void Initialize()
         {
-            _whEvents = _storage.LoadEvents().ToList();
+            InitializeHolidays();
+            InitializeEvents();
+        }
+
+        private void InitializeHolidays()
+        {
+            var holidays = _storage.LoadHolidays().ToList();
+            IsHoliday = holidays.Any(x => x.Day == _time.Today);
+            _holidays = holidays;
+        }
+        private void InitializeEvents()
+        {
+            var whEvents = _storage.LoadEvents().ToList();
 
             var lastStart = DateTime.MinValue;
             var closedTime = TimeSpan.Zero;
             var isWorking = false;
 
-            foreach (var whEvent in _whEvents)
+            foreach (var whEvent in whEvents)
             {
                 if (whEvent.Time < DateTime.Today)
                     continue;
@@ -57,13 +72,14 @@ namespace Whol.Logic
                 }
             }
 
+            _whEvents = whEvents;
             _todayClosedWorkTime = closedTime;
             _lastStart = lastStart;
             IsWorking = isWorking;
         }
 
         public bool IsWorking { get; private set; }
-        public bool IsHoliday { get; }
+        public bool IsHoliday { get; private set; }
         public TimeSpan[] LastDaysWorkTime { get; }
 
         public void StartWork()

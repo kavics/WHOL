@@ -1,6 +1,8 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Whol.Logic.Tests.Implementations;
 
@@ -8,105 +10,22 @@ namespace Whol.Logic.Tests
 {
     [ExcludeFromCodeCoverage]
     [TestClass]
-    public class BasicTests
+    public class EventTests : TestBase
     {
-        private WorkHoursController CreateController(ITime time)
+        [TestMethod]
+        public void Events_Loaded()
         {
+            var time = new TestTime();
             var storage = new TestStorage(null, null);
-            var userManager = new TestUserManager();
-            var user = new User { Email = "user1@example.com" };
-            return new WorkHoursController(time, storage, userManager, user);
-        }
-
-        [TestMethod]
-        public void StartWorking()
-        {
-            var time = new TestTime();
-            var controller = CreateController(time);
-            time.Now = DateTime.UtcNow;
 
             // ACTION
-            controller.StartWork();
+            var controller = CreateController(time, storage);
 
             // ASSERT
-            Assert.IsTrue(controller.IsWorking);
+            Assert.IsTrue(storage.EventsLoaded);
         }
         [TestMethod]
-        public void StopWorking()
-        {
-            var time = new TestTime();
-            var controller = CreateController(time);
-
-            time.Now = DateTime.UtcNow;
-            controller.StartWork();
-            time.Now = time.Now.AddMinutes(1.0d);
-
-            // ACTION
-            controller.StopWork();
-
-            // ASSERT
-            Assert.IsFalse(controller.IsWorking);
-        }
-        [TestMethod]
-        public void WorkingOneMinute()
-        {
-            var time = new TestTime();
-            var controller = CreateController(time);
-
-            // ACTION
-            time.Now = DateTime.UtcNow;
-            controller.StartWork();
-            time.Now = time.Now.AddMinutes(1.0d);
-            controller.StopWork();
-
-            // ASSERT
-            Assert.AreEqual(TimeSpan.FromMinutes(1.0d), controller.GetTodayWorkTime());
-        }
-        [TestMethod]
-        public void WorkingTwoTimes()
-        {
-            var time = new TestTime();
-            var controller = CreateController(time);
-
-            // ACTION
-            time.Now = DateTime.UtcNow;
-            controller.StartWork();
-            time.Now = time.Now.AddMinutes(1.0d);
-            controller.StopWork();
-            time.Now = time.Now.AddMinutes(1.0d);
-            controller.StartWork();
-            time.Now = time.Now.AddMinutes(2.0d);
-            controller.StopWork();
-
-            // ASSERT
-            Assert.AreEqual(TimeSpan.FromMinutes(3.0d), controller.GetTodayWorkTime());
-        }
-        [TestMethod]
-        public void GetWorkTimeDuringWorking()
-        {
-            var time = new TestTime();
-            var controller = CreateController(time);
-
-            // ACTION
-            time.Now = DateTime.UtcNow;
-            controller.StartWork();
-            time.Now = time.Now.AddMinutes(2.0d);
-
-            // ASSERT
-            Assert.AreEqual(TimeSpan.FromMinutes(2.0d), controller.GetTodayWorkTime());
-        }
-
-        /* ============================================================================= */
-
-        private WorkHoursController CreateController(ITime time, IStorage storage)
-        {
-            var userManager = new TestUserManager();
-            var user = new User { Email = "user1@example.com" };
-            return new WorkHoursController(time, storage, userManager, user);
-        }
-
-        [TestMethod]
-        public void LoadEmpty()
+        public void Events_LoadEmpty()
         {
             var time = new TestTime();
             var storage = new TestStorage(null, null);
@@ -119,7 +38,7 @@ namespace Whol.Logic.Tests
             Assert.AreEqual(TimeSpan.FromMinutes(0.0d), controller.GetTodayWorkTime());
         }
         [TestMethod]
-        public void LoadEmptyToday()
+        public void Events_LoadEmptyToday()
         {
             var time0 = DateTime.Today;
 
@@ -140,7 +59,7 @@ namespace Whol.Logic.Tests
             Assert.AreEqual(TimeSpan.FromMinutes(0.0d), controller.GetTodayWorkTime());
         }
         [TestMethod]
-        public void LoadStarted()
+        public void Events_LoadStarted()
         {
             var time0 = DateTime.Today;
             var lastDayEvents = new WhEvent[]
@@ -162,7 +81,7 @@ namespace Whol.Logic.Tests
             Assert.AreEqual(TimeSpan.FromMinutes(1.0d), controller.GetTodayWorkTime());
         }
         [TestMethod]
-        public void LoadStopped()
+        public void Events_LoadStopped()
         {
             var time0 = DateTime.Today;
 
@@ -187,7 +106,7 @@ namespace Whol.Logic.Tests
         }
 
         [TestMethod]
-        public void LoadToday()
+        public void Events_LoadToday()
         {
             var time0 = DateTime.Today;
 
@@ -212,9 +131,9 @@ namespace Whol.Logic.Tests
         }
 
         [TestMethod]
-        public void SaveStart()
+        public void Events_SaveStart()
         {
-            var time = new TestTime {Now = DateTime.Now};
+            var time = new TestTime { Now = DateTime.Now };
             var storage = new TestStorage(null, null);
             var controller = CreateController(time, storage);
 
@@ -225,7 +144,7 @@ namespace Whol.Logic.Tests
             Assert.IsTrue(storage.EventsSaved);
         }
         [TestMethod]
-        public void SaveStop()
+        public void Events_SaveStop()
         {
             var time0 = DateTime.Today;
             var time1 = time0.AddMinutes(3.0d);
@@ -243,7 +162,7 @@ namespace Whol.Logic.Tests
             Assert.IsTrue(storage.EventsSaved);
         }
         [TestMethod]
-        public void SaveOnePeriod()
+        public void Events_SaveOnePeriod()
         {
             var time0 = DateTime.Today;
             var time1 = time0.AddMinutes(3.0d);
@@ -266,8 +185,5 @@ namespace Whol.Logic.Tests
             Assert.AreEqual(time1, events[1].Time);
             Assert.AreEqual(WhEventType.Stop, events[1].EventType);
         }
-
-        [TestMethod]
-        public void LoadHolidays
     }
 }
