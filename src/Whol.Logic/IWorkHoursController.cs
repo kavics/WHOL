@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Whol.Logic
 {
@@ -6,10 +7,11 @@ namespace Whol.Logic
     {
         bool IsWorking { get; }
         bool IsHoliday { get; }
+        string HolidayDescription { get; }
         TimeSpan[] LastDaysWorkTime { get; }
         void StartWork();
         void StopWork();
         TimeSpan GetTodayWorkTime();
-        void SetHoliday(DateTime date, bool isHoliday, string description);
+        void SetHolidays(IEnumerable<Holiday> holidays);
     }
 }

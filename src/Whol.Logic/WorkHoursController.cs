@@ -10,7 +10,7 @@ namespace Whol.Logic
     public class WorkHoursController : IWorkHoursController
     {
         private List<WhEvent> _whEvents;
-        private List<Holiday> _holidays;
+        private Holiday[] _holidays;
 
         private TimeSpan _todayClosedWorkTime;
         private DateTime _lastStart;
@@ -31,15 +31,25 @@ namespace Whol.Logic
 
         private void Initialize()
         {
-            InitializeHolidays();
+            InitializeHolidays(_storage.LoadHolidays());
             InitializeEvents();
         }
 
-        private void InitializeHolidays()
+        private void InitializeHolidays(IEnumerable<Holiday> holidays)
         {
-            var holidays = _storage.LoadHolidays().ToList();
-            IsHoliday = holidays.Any(x => x.Day == _time.Today);
-            _holidays = holidays;
+            var array = holidays as Holiday[] ?? holidays.ToArray();
+            var holiday = array.FirstOrDefault(x => x.Day == _time.Today);
+            if (holiday == null)
+            {
+                IsHoliday = false;
+                HolidayDescription = null;
+            }
+            else
+            {
+                IsHoliday = true;
+                HolidayDescription = holiday.Description ?? "Holiday";
+            }
+            _holidays = array;
         }
         private void InitializeEvents()
         {
@@ -80,6 +90,7 @@ namespace Whol.Logic
 
         public bool IsWorking { get; private set; }
         public bool IsHoliday { get; private set; }
+        public string HolidayDescription { get; private set; }
         public TimeSpan[] LastDaysWorkTime { get; }
 
         public void StartWork()
@@ -105,9 +116,11 @@ namespace Whol.Logic
                 : this._todayClosedWorkTime;
         }
 
-        public void SetHoliday(DateTime date, bool isHoliday, string description)
+        public void SetHolidays(IEnumerable<Holiday> holidays)
         {
-            throw new NotImplementedException();
+            var array = holidays as Holiday[] ?? holidays.ToArray();
+            _storage.SaveHolidays(array);
+            InitializeHolidays(array);
         }
     }
 }
