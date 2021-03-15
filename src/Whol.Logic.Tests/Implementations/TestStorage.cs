@@ -12,7 +12,7 @@ namespace Whol.Logic.Tests.Implementations
     [ExcludeFromCodeCoverage]
     public class TestStorage : IStorage
     {
-        private IEnumerable<WhEvent> _lastDayEvents;
+        private IEnumerable<Event> _lastDayEvents;
         private IEnumerable<Holiday> _holidays;
 
         public bool EventsLoaded { get; set; }
@@ -20,16 +20,16 @@ namespace Whol.Logic.Tests.Implementations
         public bool EventsSaved { get; set; }
         public bool HolidaysSaved { get; set; }
 
-        public TestStorage(IEnumerable<WhEvent> lastDayEvents, IEnumerable<Holiday> holidays)
+        public TestStorage(IEnumerable<Event> lastDayEvents, IEnumerable<Holiday> holidays)
         {
             _lastDayEvents = lastDayEvents;
             _holidays = holidays;
         }
 
-        public IEnumerable<WhEvent> LoadEvents()
+        public IEnumerable<Event> LoadEvents()
         {
             EventsLoaded = true;
-            return _lastDayEvents ?? new WhEvent[0];
+            return _lastDayEvents ?? new Event[0];
         }
 
         public IEnumerable<Holiday> LoadHolidays()
@@ -38,9 +38,9 @@ namespace Whol.Logic.Tests.Implementations
             return _holidays ?? new Holiday[0];
         }
 
-        public void SaveEvents(IEnumerable<WhEvent> whEvent)
+        public void SaveEvents(IEnumerable<Event> events)
         {
-            _lastDayEvents = whEvent;
+            _lastDayEvents = events;
             EventsSaved = true;
         }
 

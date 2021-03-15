@@ -42,10 +42,10 @@ namespace Whol.Logic.Tests
         {
             var time0 = DateTime.Today;
 
-            var lastDayEvents = new WhEvent[]
+            var lastDayEvents = new Event[]
             {
-                new WhEvent {Time = time0.AddMinutes(-10.0d), EventType = WhEventType.Start},
-                new WhEvent {Time = time0.AddMinutes(-2.0d), EventType = WhEventType.Stop},
+                new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
+                new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
             };
 
             var time = new TestTime();
@@ -62,11 +62,11 @@ namespace Whol.Logic.Tests
         public void Events_LoadStarted()
         {
             var time0 = DateTime.Today;
-            var lastDayEvents = new WhEvent[]
+            var lastDayEvents = new Event[]
             {
-                new WhEvent {Time = time0.AddMinutes(-10.0d), EventType = WhEventType.Start},
-                new WhEvent {Time = time0.AddMinutes(-2.0d), EventType = WhEventType.Stop},
-                new WhEvent {Time = time0.AddMinutes(1.0d), EventType = WhEventType.Start},
+                new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
+                new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
+                new Event {Time = time0.AddMinutes(1.0d), EventType = EventType.Start},
             };
 
             var time = new TestTime();
@@ -85,12 +85,12 @@ namespace Whol.Logic.Tests
         {
             var time0 = DateTime.Today;
 
-            var lastDayEvents = new WhEvent[]
+            var lastDayEvents = new Event[]
             {
-                new WhEvent {Time = time0.AddMinutes(-10.0d), EventType = WhEventType.Start},
-                new WhEvent {Time = time0.AddMinutes(-2.0d), EventType = WhEventType.Stop},
-                new WhEvent {Time = time0.AddMinutes(1.0d), EventType = WhEventType.Start},
-                new WhEvent {Time = time0.AddMinutes(2.0d), EventType = WhEventType.Stop},
+                new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
+                new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
+                new Event {Time = time0.AddMinutes(1.0d), EventType = EventType.Start},
+                new Event {Time = time0.AddMinutes(2.0d), EventType = EventType.Stop},
             };
 
             var time = new TestTime();
@@ -110,14 +110,14 @@ namespace Whol.Logic.Tests
         {
             var time0 = DateTime.Today;
 
-            var lastDayEvents = new WhEvent[]
+            var lastDayEvents = new Event[]
             {
-                new WhEvent {Time = time0.AddMinutes(-10.0d), EventType = WhEventType.Start},
-                new WhEvent {Time = time0.AddMinutes(-2.0d), EventType = WhEventType.Stop},
-                new WhEvent {Time = time0.AddMinutes(1.0d), EventType = WhEventType.Start},
-                new WhEvent {Time = time0.AddMinutes(2.0d), EventType = WhEventType.Stop},
-                new WhEvent {Time = time0.AddMinutes(4.0d), EventType = WhEventType.Start},
-                new WhEvent {Time = time0.AddMinutes(8.0d), EventType = WhEventType.Stop},
+                new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
+                new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
+                new Event {Time = time0.AddMinutes(1.0d), EventType = EventType.Start},
+                new Event {Time = time0.AddMinutes(2.0d), EventType = EventType.Stop},
+                new Event {Time = time0.AddMinutes(4.0d), EventType = EventType.Start},
+                new Event {Time = time0.AddMinutes(8.0d), EventType = EventType.Stop},
             };
 
             var time = new TestTime();
@@ -181,9 +181,9 @@ namespace Whol.Logic.Tests
             var events = storage.LoadEvents().ToArray();
             Assert.AreEqual(2, events.Length);
             Assert.AreEqual(time0, events[0].Time);
-            Assert.AreEqual(WhEventType.Start, events[0].EventType);
+            Assert.AreEqual(EventType.Start, events[0].EventType);
             Assert.AreEqual(time1, events[1].Time);
-            Assert.AreEqual(WhEventType.Stop, events[1].EventType);
+            Assert.AreEqual(EventType.Stop, events[1].EventType);
         }
     }
 }

@@ -7,9 +7,9 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Whol.Logic
 {
-    public class WorkHoursController : IWorkHoursController
+    public class EventController : IEventController
     {
-        private List<WhEvent> _whEvents;
+        private List<Event> _events;
 
         private TimeSpan _todayClosedWorkTime;
         private DateTime _lastStart;
@@ -19,7 +19,7 @@ namespace Whol.Logic
         private readonly IUserManager _userManager;
         private readonly User _user;
 
-        public WorkHoursController(ITime time, IStorage storage, IUserManager userManager, User user)
+        public EventController(ITime time, IStorage storage, IUserManager userManager, User user)
         {
             _time = time;
             _storage = storage;
@@ -29,36 +29,33 @@ namespace Whol.Logic
         }
         private void Initialize()
         {
-            var whEvents = _storage.LoadEvents().ToList();
+            var events = _storage.LoadEvents().ToList();
 
             var lastStart = DateTime.MinValue;
             var closedTime = TimeSpan.Zero;
             var isWorking = false;
 
-            foreach (var whEvent in whEvents)
+            foreach (var @event in events)
             {
-                if (whEvent.Time < DateTime.Today)
+                if (@event.Time < DateTime.Today)
                     continue;
 
-                switch (whEvent.EventType)
+                switch (@event.EventType)
                 {
-                    case WhEventType.Created:
-                        break;
-                    case WhEventType.Start:
-                        lastStart = whEvent.Time;
+                    case EventType.Start:
+                        lastStart = @event.Time;
                         isWorking = true;
                         break;
-                    case WhEventType.Stop:
-                        closedTime += whEvent.Time - lastStart;
+                    case EventType.Stop:
+                        closedTime += @event.Time - lastStart;
                         isWorking = false;
                         break;
-                    case WhEventType.Modify:
-                        break;
+                    default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
 
-            _whEvents = whEvents;
+            _events = events;
             _todayClosedWorkTime = closedTime;
             _lastStart = lastStart;
             IsWorking = isWorking;
@@ -70,16 +67,16 @@ namespace Whol.Logic
         {
             _lastStart = _time.Now;
             IsWorking = true;
-            _whEvents.Add(new WhEvent{Time = _time.Now, EventType = WhEventType.Start});
-            _storage.SaveEvents(_whEvents);
+            _events.Add(new Event{Time = _time.Now, EventType = EventType.Start});
+            _storage.SaveEvents(_events);
         }
 
         public void StopWork()
         {
             _todayClosedWorkTime += _time.Now - _lastStart;
             IsWorking = false;
-            _whEvents.Add(new WhEvent { Time = _time.Now, EventType = WhEventType.Stop });
-            _storage.SaveEvents(_whEvents);
+            _events.Add(new Event { Time = _time.Now, EventType = EventType.Stop });
+            _storage.SaveEvents(_events);
         }
 
         public TimeSpan GetTodayWorkTime()

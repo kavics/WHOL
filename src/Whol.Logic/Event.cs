@@ -2,12 +2,12 @@
 
 namespace Whol.Logic
 {
-    public enum WhEventType { Created, Start, Stop, Modify }
+    public enum EventType { Start, Stop }
 
-    public class WhEvent
+    public class Event
     {
         public DateTime Time { get; set; }      // UTC!
-        public WhEventType EventType { get; set; }
+        public EventType EventType { get; set; }
         public string Description { get; set; } // can be null
         public TimeSpan DeltaTime { get; set; } // can be 
     }

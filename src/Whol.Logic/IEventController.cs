@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Whol.Logic
 {
-    interface IWorkHoursController
+    interface IEventController
     {
         bool IsWorking { get; }
         void StartWork();
