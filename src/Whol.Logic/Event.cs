@@ -8,7 +8,5 @@ namespace Whol.Logic
     {
         public DateTime Time { get; set; }      // UTC!
         public EventType EventType { get; set; }
-        public string Description { get; set; } // can be null
-        public TimeSpan DeltaTime { get; set; } // can be 
     }
 }
