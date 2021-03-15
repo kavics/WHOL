@@ -10,7 +10,6 @@ namespace Whol.Logic
     public class WorkHoursController : IWorkHoursController
     {
         private List<WhEvent> _whEvents;
-        private Holiday[] _holidays;
 
         private TimeSpan _todayClosedWorkTime;
         private DateTime _lastStart;
@@ -28,30 +27,7 @@ namespace Whol.Logic
             _user = user;
             Initialize();
         }
-
         private void Initialize()
-        {
-            InitializeHolidays(_storage.LoadHolidays());
-            InitializeEvents();
-        }
-
-        private void InitializeHolidays(IEnumerable<Holiday> holidays)
-        {
-            var array = holidays as Holiday[] ?? holidays.ToArray();
-            var holiday = array.FirstOrDefault(x => x.Day == _time.Today);
-            if (holiday == null)
-            {
-                IsHoliday = false;
-                HolidayDescription = null;
-            }
-            else
-            {
-                IsHoliday = true;
-                HolidayDescription = holiday.Description ?? "Holiday";
-            }
-            _holidays = array;
-        }
-        private void InitializeEvents()
         {
             var whEvents = _storage.LoadEvents().ToList();
 
@@ -89,8 +65,6 @@ namespace Whol.Logic
         }
 
         public bool IsWorking { get; private set; }
-        public bool IsHoliday { get; private set; }
-        public string HolidayDescription { get; private set; }
         public TimeSpan[] LastDaysWorkTime { get; }
 
         public void StartWork()
@@ -116,11 +90,5 @@ namespace Whol.Logic
                 : this._todayClosedWorkTime;
         }
 
-        public void SetHolidays(IEnumerable<Holiday> holidays)
-        {
-            var array = holidays as Holiday[] ?? holidays.ToArray();
-            _storage.SaveHolidays(array);
-            InitializeHolidays(array);
-        }
     }
 }

@@ -19,7 +19,7 @@ namespace Whol.Logic.Tests
             var storage = new TestStorage(null, null);
 
             // ACTION
-            var controller = CreateController(time, storage);
+            var controller = CreateWorkHoursController(time, storage);
 
             // ASSERT
             Assert.IsTrue(storage.EventsLoaded);
@@ -31,7 +31,7 @@ namespace Whol.Logic.Tests
             var storage = new TestStorage(null, null);
 
             // ACTION
-            var controller = CreateController(time, storage);
+            var controller = CreateWorkHoursController(time, storage);
 
             // ASSERT
             Assert.IsFalse(controller.IsWorking);
@@ -52,7 +52,7 @@ namespace Whol.Logic.Tests
             var storage = new TestStorage(lastDayEvents, null);
 
             // ACTION
-            var controller = CreateController(time, storage);
+            var controller = CreateWorkHoursController(time, storage);
 
             // ASSERT
             Assert.IsFalse(controller.IsWorking);
@@ -74,7 +74,7 @@ namespace Whol.Logic.Tests
             var storage = new TestStorage(lastDayEvents, null);
 
             // ACTION
-            var controller = CreateController(time, storage);
+            var controller = CreateWorkHoursController(time, storage);
 
             // ASSERT
             Assert.IsTrue(controller.IsWorking);
@@ -98,7 +98,7 @@ namespace Whol.Logic.Tests
             var storage = new TestStorage(lastDayEvents, null);
 
             // ACTION
-            var controller = CreateController(time, storage);
+            var controller = CreateWorkHoursController(time, storage);
 
             // ASSERT
             Assert.IsFalse(controller.IsWorking);
@@ -124,7 +124,7 @@ namespace Whol.Logic.Tests
             var storage = new TestStorage(lastDayEvents, null);
 
             // ACTION
-            var controller = CreateController(time, storage);
+            var controller = CreateWorkHoursController(time, storage);
 
             // ASSERT
             Assert.AreEqual(TimeSpan.FromMinutes(5.0d), controller.GetTodayWorkTime());
@@ -135,7 +135,7 @@ namespace Whol.Logic.Tests
         {
             var time = new TestTime { Now = DateTime.Now };
             var storage = new TestStorage(null, null);
-            var controller = CreateController(time, storage);
+            var controller = CreateWorkHoursController(time, storage);
 
             // ACTION
             controller.StartWork();
@@ -150,7 +150,7 @@ namespace Whol.Logic.Tests
             var time1 = time0.AddMinutes(3.0d);
             var time = new TestTime { Now = time0 };
             var storage = new TestStorage(null, null);
-            var controller = CreateController(time, storage);
+            var controller = CreateWorkHoursController(time, storage);
             controller.StartWork();
             time.Now = time1;
             storage.EventsSaved = false;
@@ -168,7 +168,7 @@ namespace Whol.Logic.Tests
             var time1 = time0.AddMinutes(3.0d);
             var time = new TestTime();
             var storage = new TestStorage(null, null);
-            var controller = CreateController(time, storage);
+            var controller = CreateWorkHoursController(time, storage);
             storage.EventsSaved = false;
 
             // ACTION

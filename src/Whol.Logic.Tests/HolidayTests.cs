@@ -17,7 +17,7 @@ namespace Whol.Logic.Tests
             var storage = new TestStorage(null, null);
 
             // ACTION
-            var controller = CreateController(time, storage);
+            var controller = CreateHolidayController(time, storage);
 
             // ASSERT
             Assert.IsTrue(storage.HolidaysLoaded);
@@ -30,7 +30,7 @@ namespace Whol.Logic.Tests
             var storage = new TestStorage(null, holidays);
 
             // ACTION
-            var controller = CreateController(time, storage);
+            var controller = CreateHolidayController(time, storage);
 
             // ASSERT
             Assert.IsTrue(storage.HolidaysLoaded);
@@ -50,7 +50,7 @@ namespace Whol.Logic.Tests
             var storage = new TestStorage(null, holidays);
 
             // ACTION
-            var controller = CreateController(time, storage);
+            var controller = CreateHolidayController(time, storage);
 
             // ASSERT
             Assert.IsTrue(controller.IsHoliday);
@@ -68,7 +68,7 @@ namespace Whol.Logic.Tests
             var storage = new TestStorage(null, holidays);
 
             // ACTION
-            var controller = CreateController(time, storage);
+            var controller = CreateHolidayController(time, storage);
 
             // ASSERT
             Assert.IsFalse(controller.IsHoliday);
@@ -81,7 +81,7 @@ namespace Whol.Logic.Tests
             var time = new TestTime {Today = today};
             var holidays = new Holiday[0];
             var storage = new TestStorage(null, holidays);
-            var controller = CreateController(time, storage);
+            var controller = CreateHolidayController(time, storage);
 
             // ACTION
             controller.SetHolidays(new List<Holiday>
@@ -100,7 +100,7 @@ namespace Whol.Logic.Tests
             var time = new TestTime { Today = today };
             var holidays = new Holiday[0];
             var storage = new TestStorage(null, holidays);
-            var controller = CreateController(time, storage);
+            var controller = CreateHolidayController(time, storage);
 
             // ACTION
             controller.SetHolidays(new List<Holiday>
@@ -123,7 +123,7 @@ namespace Whol.Logic.Tests
                 new Holiday{Day=today.AddDays(+10.0d)}
             };
             var storage = new TestStorage(null, holidays);
-            var controller = CreateController(time, storage);
+            var controller = CreateHolidayController(time, storage);
 
             // ACTION
             controller.SetHolidays(new[]
@@ -148,7 +148,7 @@ namespace Whol.Logic.Tests
                 new Holiday{Day=today.AddDays(+10.0d)}
             };
             var storage = new TestStorage(null, holidays);
-            var controller = CreateController(time, storage);
+            var controller = CreateHolidayController(time, storage);
 
             // ACTION
             controller.SetHolidays(new[]
@@ -172,7 +172,7 @@ namespace Whol.Logic.Tests
                 new Holiday{Day=today}
             };
             var storage = new TestStorage(null, holidays);
-            var controller = CreateController(time, storage);
+            var controller = CreateHolidayController(time, storage);
 
             // ACTION
             controller.SetHolidays(new[]
@@ -196,7 +196,7 @@ namespace Whol.Logic.Tests
                 new Holiday{Day=today.AddDays(+10.0d)}
             };
             var storage = new TestStorage(null, holidays);
-            var controller = CreateController(time, storage);
+            var controller = CreateHolidayController(time, storage);
 
             // ACTION
             controller.SetHolidays(new[]
@@ -219,7 +219,7 @@ namespace Whol.Logic.Tests
             var storage = new TestStorage(null, holidays);
 
             // ACTION
-            var controller = CreateController(time, storage);
+            var controller = CreateHolidayController(time, storage);
 
             // ASSERT
             Assert.IsTrue(controller.IsHoliday);
@@ -234,7 +234,7 @@ namespace Whol.Logic.Tests
             var storage = new TestStorage(null, holidays);
 
             // ACTION
-            var controller = CreateController(time, storage);
+            var controller = CreateHolidayController(time, storage);
 
             // ASSERT
             Assert.IsTrue(controller.IsHoliday);
@@ -247,7 +247,7 @@ namespace Whol.Logic.Tests
             var time = new TestTime { Today = today };
             var holidays = new[] { new Holiday { Day = today, Description = "Developers Day" } };
             var storage = new TestStorage(null, holidays);
-            var controller = CreateController(time, storage);
+            var controller = CreateHolidayController(time, storage);
             Assert.IsTrue(controller.IsHoliday);
             Assert.AreEqual("Developers Day", controller.HolidayDescription);
 
@@ -268,7 +268,7 @@ namespace Whol.Logic.Tests
             var time = new TestTime { Today = today };
             var holidays = new[] { new Holiday { Day = today, Description = null } };
             var storage = new TestStorage(null, holidays);
-            var controller = CreateController(time, storage);
+            var controller = CreateHolidayController(time, storage);
             Assert.IsTrue(controller.IsHoliday);
             Assert.AreEqual("Holiday", controller.HolidayDescription);
 

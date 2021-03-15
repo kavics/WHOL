@@ -6,12 +6,13 @@ namespace Whol.Logic
     interface IWorkHoursController
     {
         bool IsWorking { get; }
-        bool IsHoliday { get; }
-        string HolidayDescription { get; }
         TimeSpan[] LastDaysWorkTime { get; }
         void StartWork();
         void StopWork();
         TimeSpan GetTodayWorkTime();
-        void SetHolidays(IEnumerable<Holiday> holidays);
+
+        //bool IsHoliday_DELETE { get; }
+        //string HolidayDescription_DELETE { get; }
+        //void SetHolidays_DELETE(IEnumerable<Holiday> holidays);
     }
 }

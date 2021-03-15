@@ -14,7 +14,7 @@ namespace Whol.Logic.Tests
         public void Working_Start()
         {
             var time = new TestTime();
-            var controller = CreateController(time);
+            var controller = CreateWorkHoursController(time);
             time.Now = DateTime.UtcNow;
 
             // ACTION
@@ -27,7 +27,7 @@ namespace Whol.Logic.Tests
         public void Working_Stop()
         {
             var time = new TestTime();
-            var controller = CreateController(time);
+            var controller = CreateWorkHoursController(time);
 
             time.Now = DateTime.UtcNow;
             controller.StartWork();
@@ -43,7 +43,7 @@ namespace Whol.Logic.Tests
         public void Working_OneMinute()
         {
             var time = new TestTime();
-            var controller = CreateController(time);
+            var controller = CreateWorkHoursController(time);
 
             // ACTION
             time.Now = DateTime.UtcNow;
@@ -58,7 +58,7 @@ namespace Whol.Logic.Tests
         public void Working_TwoTimes()
         {
             var time = new TestTime();
-            var controller = CreateController(time);
+            var controller = CreateWorkHoursController(time);
 
             // ACTION
             time.Now = DateTime.UtcNow;
@@ -77,7 +77,7 @@ namespace Whol.Logic.Tests
         public void Working_GetWorkTimeDuringWorking()
         {
             var time = new TestTime();
-            var controller = CreateController(time);
+            var controller = CreateWorkHoursController(time);
 
             // ACTION
             time.Now = DateTime.UtcNow;
