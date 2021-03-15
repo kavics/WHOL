@@ -7,6 +7,7 @@ using Whol.Logic.Tests.Implementations;
 
 namespace Whol.Logic.Tests
 {
+    [ExcludeFromCodeCoverage]
     [TestClass]
     public class HolidayTests : TestBase
     {

@@ -1,7 +1,9 @@
-﻿using Whol.Logic.Tests.Implementations;
+﻿using System.Diagnostics.CodeAnalysis;
+using Whol.Logic.Tests.Implementations;
 
 namespace Whol.Logic.Tests
 {
+    [ExcludeFromCodeCoverage]
     public abstract class TestBase
     {
         protected WorkHoursController CreateWorkHoursController(ITime time)
