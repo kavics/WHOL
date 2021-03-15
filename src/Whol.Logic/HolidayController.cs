@@ -5,12 +5,6 @@ using System.Text;
 
 namespace Whol.Logic
 {
-    public interface IHolidayController
-    {
-        bool IsHoliday { get; }
-        string HolidayDescription { get; }
-        void SetHolidays(IEnumerable<Holiday> holidays);
-    }
     public class HolidayController : IHolidayController
     {
         private Holiday[] _holidays;
