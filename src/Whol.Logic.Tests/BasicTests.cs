@@ -1,11 +1,12 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Whol.Logic.Tests.Implementations;
 
 namespace Whol.Logic.Tests
 {
+    [ExcludeFromCodeCoverage]
     [TestClass]
     public class BasicTests
     {
@@ -265,5 +266,8 @@ namespace Whol.Logic.Tests
             Assert.AreEqual(time1, events[1].Time);
             Assert.AreEqual(WhEventType.Stop, events[1].EventType);
         }
+
+        [TestMethod]
+        public void LoadHolidays
     }
 }

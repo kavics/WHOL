@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Utilities;
 
@@ -8,6 +9,7 @@ namespace Whol.Logic.Tests.Implementations
     /// <summary>
     /// IStorage stub
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class TestStorage : IStorage
     {
         private IEnumerable<WhEvent> _lastDayEvents;
