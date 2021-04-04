@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Whol.Logic
@@ -18,6 +20,7 @@ namespace Whol.Logic
         private readonly IStorage _storage;
         private readonly IUserManager _userManager;
         private readonly User _user;
+        private List<string> _taskList;
 
         public EventController(ITime time, IStorage storage, IUserManager userManager, User user)
         {
@@ -33,22 +36,24 @@ namespace Whol.Logic
 
             var lastStart = DateTime.MinValue;
             var closedTime = TimeSpan.Zero;
-            var isWorking = false;
+            Event activeEvent = null;
+            var tasks = new List<string>();
 
             foreach (var @event in events)
             {
-                if (@event.Time < DateTime.Today)
-                    continue;
+                var today = DateTime.Today;
 
                 switch (@event.EventType)
                 {
                     case EventType.Start:
                         lastStart = @event.Time;
-                        isWorking = true;
+                        activeEvent = @event;
+                        AddTask(tasks, @event.Task);
                         break;
                     case EventType.Stop:
-                        closedTime += @event.Time - lastStart;
-                        isWorking = false;
+                        if(@event.Time >= today)
+                            closedTime += @event.Time - lastStart;
+                        activeEvent = null;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -58,16 +63,33 @@ namespace Whol.Logic
             _events = events;
             _todayClosedWorkTime = closedTime;
             _lastStart = lastStart;
-            IsWorking = isWorking;
+            IsWorking = activeEvent != null;
+            CurrentTask = activeEvent?.Task;
+            _taskList = tasks;
+        }
+
+        private void AddTask(List<string> tasks, string task)
+        {
+            if (task != null)
+            {
+                if (tasks.Contains(task))
+                    tasks.Remove(task);
+                tasks.Add(task);
+            }
         }
 
         public bool IsWorking { get; private set; }
+        public string CurrentTask { get; private set; }
 
-        public void StartWork()
+        public IEnumerable<string> Tasks => _taskList;
+
+        public void StartWork(string task = null)
         {
             _lastStart = _time.Now;
             IsWorking = true;
-            _events.Add(new Event{Time = _time.Now, EventType = EventType.Start});
+            CurrentTask = task;
+            AddTask(_taskList, task);
+            _events.Add(new Event{Time = _time.Now, EventType = EventType.Start, Task = task});
             _storage.SaveEvents(_events);
         }
 
