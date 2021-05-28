@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Whol.Logic
 {
@@ -18,11 +13,13 @@ namespace Whol.Logic
 
         private readonly ITime _time;
         private readonly IStorage _storage;
+// ReSharper disable once NotAccessedField.Local
         private readonly IUserManager _userManager;
+// ReSharper disable once NotAccessedField.Local
         private readonly User _user;
         private List<string> _taskList;
 
-        public EventController(ITime time, IStorage storage, IUserManager userManager, User user)
+        public EventController(ITime time, IStorage storage, IUserManager userManager, User user = null)
         {
             _time = time;
             _storage = storage;

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whol.Logic", "Whol.Logic\Wh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whol.Logic.Tests", "Whol.Logic.Tests\Whol.Logic.Tests.csproj", "{75279097-BD0E-474D-BFE2-9E177FD13D4B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Whol.ConsoleUI", "Whol.ConsoleUI\Whol.ConsoleUI.csproj", "{716989FB-3345-4044-B8B3-0AB902FBAC32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{75279097-BD0E-474D-BFE2-9E177FD13D4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75279097-BD0E-474D-BFE2-9E177FD13D4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75279097-BD0E-474D-BFE2-9E177FD13D4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{716989FB-3345-4044-B8B3-0AB902FBAC32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{716989FB-3345-4044-B8B3-0AB902FBAC32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{716989FB-3345-4044-B8B3-0AB902FBAC32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{716989FB-3345-4044-B8B3-0AB902FBAC32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

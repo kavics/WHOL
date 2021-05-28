@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Whol.Logic
 {
-    interface IEventController
+    public interface IEventController
     {
         bool IsWorking { get; }
         string CurrentTask { get; }
