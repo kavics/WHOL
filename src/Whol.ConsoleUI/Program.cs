@@ -8,6 +8,7 @@ namespace Whol.ConsoleUI
     class Program
     {
         private static IServiceProvider _services;
+        private static IEventController _controller;
         private static Timer _timer = new Timer(Tick, null, TimeSpan.FromSeconds(0.1d), TimeSpan.FromSeconds(1.0d));
         private static bool _running;
         private static int _counter;
@@ -15,16 +16,24 @@ namespace Whol.ConsoleUI
         {
             if (!_running)
                 return;
-
-            Console.Write($"WORK: {++_counter}\r");
+            var workTime = _controller.GetTodayWorkTime();
+            Console.Write($"WORK: {workTime:hh\\:mm\\:ss} Press <enter> to stop.            \r");
         }
 
-        private static readonly string StartText = "Relaxing. Type task and <enter> to start work:";
+        private static string StartText()
+        {
+            var todayWorkTime = _controller.GetTodayWorkTime();
+            return $"RELAXING. Workday: {todayWorkTime:hh\\:mm\\:ss}. Type task and <enter> to start work (?<enter>: help):";
+        }
+
         static void Main(string[] args)
         {
             BuildServices();
             Initialize();
             RunUi();
+
+            if (_running)
+                Stop();
         }
         private static void BuildServices()
         {
@@ -41,12 +50,19 @@ namespace Whol.ConsoleUI
         }
         private static void Initialize()
         {
-            var controller = _services.GetRequiredService<IEventController>();
-            var todayWorkTime = controller.GetTodayWorkTime();
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
+            _controller = _services.GetRequiredService<IEventController>();
         }
+
+        private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
+        {
+            if (_running)
+                Stop();
+        }
+
         private static void RunUi()
         {
-            Console.WriteLine(StartText);
+            Console.WriteLine(StartText());
             while (true)
             {
                 var input = Console.ReadLine();
@@ -69,8 +85,7 @@ namespace Whol.ConsoleUI
 
         private static void Start(string task)
         {
-            var controller = _services.GetRequiredService<IEventController>();
-            controller.StartWork(task);
+            _controller.StartWork(task);
 
             var blank = new string(' ', Console.WindowWidth - 1) + "\r";
             Console.SetCursorPosition(0, Console.CursorTop - 1);
@@ -81,10 +96,8 @@ namespace Whol.ConsoleUI
         }
         private static void Stop()
         {
-            var controller = _services.GetRequiredService<IEventController>();
-            controller.StopWork();
-
-            Console.WriteLine(StartText);
+            _controller.StopWork();
+            Console.WriteLine(StartText());
         }
     }
 }
