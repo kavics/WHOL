@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Whol.Logic
 {
@@ -39,7 +37,7 @@ namespace Whol.Logic
             }
             _holidays = array;
         }
-
+        
         public bool IsHoliday { get; private set; }
         public string HolidayDescription{ get; private set; }
         public void SetHolidays(IEnumerable<Holiday> holidays)

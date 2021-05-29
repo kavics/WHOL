@@ -43,6 +43,7 @@ namespace Whol.ConsoleUI
             builder.AddSingleton<IStorage, SimpleFileSystemStorage>();
             builder.AddSingleton<IUserManager, BuiltInUserManager>();
             builder.AddSingleton<IEventController, EventController>();
+            builder.AddSingleton<IHolidayController, HolidayController>();
             builder.AddSingleton<IDisk, FsDisk>();
             builder.AddSingleton<IEventSerializer, OneLineEventSerializer>();
 
