@@ -106,7 +106,7 @@ namespace Whol.Logic
         }
         public void SaveHolidays(IEnumerable<Holiday> holidays)
         {
-            throw new NotImplementedException(); //UNDONE: SimpleFileSystemStorage.LoadEvents is not implemented
+            throw new NotImplementedException(); //UNDONE: SaveHolidays.LoadEvents is not implemented
         }
     }
 }

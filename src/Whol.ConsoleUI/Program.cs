@@ -28,6 +28,10 @@ namespace Whol.ConsoleUI
             var todayWorkTime = _eventController.GetTodayWorkTime();
             return $"RELAXING. {todayWorkTime:hh\\:mm\\:ss} {dayText}. Type task and <enter> to start work (?<enter>: help):";
         }
+        private static string HelpText()
+        {
+            return $"HELPTEXT (not implemented)";//UNDONE: Whol.ConsoleUI.Program.HelpText is not implemented
+        }
 
         static void Main(string[] args)
         {
@@ -83,8 +87,15 @@ namespace Whol.ConsoleUI
                 }
                 else
                 {
-                    Start(input);
-                    _running = true;
+                    if (input == "?")
+                    {
+                        Console.WriteLine(HelpText());
+                    }
+                    else
+                    {
+                        Start(input);
+                        _running = true;
+                    }
                 }
             }
         }
