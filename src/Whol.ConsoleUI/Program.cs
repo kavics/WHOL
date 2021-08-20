@@ -7,11 +7,11 @@ namespace Whol.ConsoleUI
 {
     class Program
     {
-        private static ITime _time;
+        //private static ITime _time;
         private static IServiceProvider _services;
         private static IEventController _eventController;
         private static IHolidayController _holiday;
-        private static Timer _timer = new Timer(Tick, null, TimeSpan.FromSeconds(0.1d), TimeSpan.FromSeconds(1.0d));
+        private static readonly Timer Timer = new Timer(Tick, null, TimeSpan.FromSeconds(0.1d), TimeSpan.FromSeconds(1.0d));
         private static bool _running;
 
         private static void Tick(object state)
@@ -33,7 +33,7 @@ namespace Whol.ConsoleUI
             return $"HELPTEXT (not implemented)";//UNDONE: Whol.ConsoleUI.Program.HelpText is not implemented
         }
 
-        static void Main(string[] args)
+        static void Main(/*string[] args*/)
         {
             BuildServices();
             Initialize();
@@ -58,8 +58,8 @@ namespace Whol.ConsoleUI
         }
         private static void Initialize()
         {
-            AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
-            _time = _services.GetRequiredService<ITime>();
+            AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
+            //_time = _services.GetRequiredService<ITime>();
             _eventController = _services.GetRequiredService<IEventController>();
             _holiday = _services.GetRequiredService<IHolidayController>();
         }
@@ -68,6 +68,7 @@ namespace Whol.ConsoleUI
         {
             if (_running)
                 Stop();
+            Timer.Dispose();
         }
 
         private static void RunUi()
