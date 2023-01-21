@@ -85,6 +85,8 @@ namespace Whol.Logic
 
         public void StartWork(string task = null)
         {
+            if(IsWorking)
+                StopWork();
             _lastStart = _time.Now;
             IsWorking = true;
             CurrentTask = task;
@@ -95,17 +97,30 @@ namespace Whol.Logic
 
         public void StopWork()
         {
-            _todayClosedWorkTime += _time.Now - _lastStart;
+            var now = _time.Now;
+
+            if (_lastStart < now.Date)
+            {
+                _todayClosedWorkTime = now - now.Date;
+            }
+            else
+            {
+                _todayClosedWorkTime += now - _lastStart;
+            }
             IsWorking = false;
-            _events.Add(new Event { Time = _time.Now, EventType = EventType.Stop });
+            _events.Add(new Event { Time = now, EventType = EventType.Stop });
             _storage.SaveEvents(_events);
         }
 
         public TimeSpan GetTodayWorkTime()
         {
-            return this.IsWorking
-                ? this._todayClosedWorkTime + (this._time.Now - this._lastStart)
-                : this._todayClosedWorkTime;
+            if (!IsWorking)
+                return this._todayClosedWorkTime;
+
+            var now = _time.Now;
+            return _lastStart < now.Date 
+                ? now - now.Date 
+                : this._todayClosedWorkTime + (now - this._lastStart);
         }
 
     }
