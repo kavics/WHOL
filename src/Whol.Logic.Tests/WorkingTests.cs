@@ -11,13 +11,11 @@ namespace Whol.Logic.Tests
     [TestClass]
     public class WorkingTests : TestBase
     {
-        /*
         [TestMethod]
         public void Working_Start()
         {
-            var time = new TestTime();
-            var controller = CreateWorkHoursController(time);
-            time.Now = DateTime.UtcNow;
+            var services = GetServices();
+            var controller = services.GetRequiredService<IEventController>();
 
             // ACTION
             controller.StartWork();
@@ -28,8 +26,9 @@ namespace Whol.Logic.Tests
         [TestMethod]
         public void Working_Stop()
         {
-            var time = new TestTime();
-            var controller = CreateWorkHoursController(time);
+            var services = GetServices();
+            var time = (TestTime)services.GetRequiredService<ITime>();
+            var controller = services.GetRequiredService<IEventController>();
 
             time.Now = DateTime.UtcNow;
             controller.StartWork();
@@ -44,8 +43,9 @@ namespace Whol.Logic.Tests
         [TestMethod]
         public void Working_OneMinute()
         {
-            var time = new TestTime();
-            var controller = CreateWorkHoursController(time);
+            var services = GetServices();
+            var time = (TestTime)services.GetRequiredService<ITime>();
+            var controller = services.GetRequiredService<IEventController>();
 
             // ACTION
             time.Now = DateTime.UtcNow;
@@ -59,8 +59,9 @@ namespace Whol.Logic.Tests
         [TestMethod]
         public void Working_TwoTimes()
         {
-            var time = new TestTime();
-            var controller = CreateWorkHoursController(time);
+            var services = GetServices();
+            var time = (TestTime)services.GetRequiredService<ITime>();
+            var controller = services.GetRequiredService<IEventController>();
 
             // ACTION
             time.Now = DateTime.UtcNow;
@@ -78,8 +79,9 @@ namespace Whol.Logic.Tests
         [TestMethod]
         public void Working_GetWorkTimeDuringWorking()
         {
-            var time = new TestTime();
-            var controller = CreateWorkHoursController(time);
+            var services = GetServices();
+            var time = (TestTime)services.GetRequiredService<ITime>();
+            var controller = services.GetRequiredService<IEventController>();
 
             // ACTION
             time.Now = DateTime.UtcNow;
@@ -97,8 +99,9 @@ namespace Whol.Logic.Tests
         [TestMethod]
         public void Working_StartTwiceStopOnce()
         {
-            var time = new TestTime();
-            var controller = CreateWorkHoursController(time);
+            var services = GetServices();
+            var time = (TestTime)services.GetRequiredService<ITime>();
+            var controller = services.GetRequiredService<IEventController>();
 
             // ACTION
             time.Now = DateTime.UtcNow;
@@ -115,8 +118,9 @@ namespace Whol.Logic.Tests
         [TestMethod]
         public void Working_DayTransition()
         {
-            var time = new TestTime();
-            var controller = CreateWorkHoursController(time);
+            var services = GetServices();
+            var time = (TestTime)services.GetRequiredService<ITime>();
+            var controller = services.GetRequiredService<IEventController>();
 
             // ACTION
             time.Now = new DateTime(2000, 1, 1, 22, 30, 0);
@@ -127,6 +131,5 @@ namespace Whol.Logic.Tests
             // ASSERT
             Assert.AreEqual(TimeSpan.FromHours(2.0d), controller.GetTodayWorkTime());
         }
-        */
     }
 }

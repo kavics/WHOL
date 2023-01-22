@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Utilities;
 
 namespace Whol.Logic.Tests.Implementations
 {
@@ -19,11 +16,6 @@ namespace Whol.Logic.Tests.Implementations
         public bool HolidaysLoaded { get; set; }
         public bool EventsSaved { get; set; }
         public bool HolidaysSaved { get; set; }
-
-        public TestStorage()
-        {
-
-        }
 
         public void Initialize(IEnumerable<Event> lastDayEvents, IEnumerable<Holiday> holidays)
         {

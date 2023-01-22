@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +12,7 @@ namespace Whol.Logic.Tests
     public class StatisticsTests : TestBase
     {
         [TestMethod]
-        public void Working_Task_Statistics()
+        public void Stat_SummarizeTasks()
         {
             var services = GetServices();
 

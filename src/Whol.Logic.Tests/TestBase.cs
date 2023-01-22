@@ -21,28 +21,5 @@ namespace Whol.Logic.Tests
             configureServices?.Invoke(services);
             return services.BuildServiceProvider();
         }
-
-        /*
-        protected EventController CreateWorkHoursController(ITime time)
-        {
-            var storage = new TestStorage(null, null);
-            var userManager = new TestUserManager();
-            var user = new User { Email = "user1@example.com" };
-            return new EventController(time, storage, userManager);
-        }
-        protected EventController CreateWorkHoursController(ITime time, IStorage storage)
-        {
-            var userManager = new TestUserManager();
-            var user = new User { Email = "user1@example.com" };
-            return new EventController(time, storage, userManager);
-        }
-
-        protected HolidayController CreateHolidayController(ITime time, IStorage storage)
-        {
-            var userManager = new TestUserManager();
-            var user = new User { Email = "user1@example.com" };
-            return new HolidayController(time, storage, userManager);
-        }
-        */
     }
 }

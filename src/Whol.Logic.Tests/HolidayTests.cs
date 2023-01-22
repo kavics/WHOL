@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Whol.Logic.Tests.Implementations;
@@ -18,7 +17,7 @@ namespace Whol.Logic.Tests
             var services = GetServices();
 
             // ACTION
-            var controller = services.GetRequiredService<IHolidayController>();
+            var _ = services.GetRequiredService<IHolidayController>();
 
             // ASSERT
             var storage = (TestStorage)services.GetRequiredService<IStorage>();
@@ -44,7 +43,7 @@ namespace Whol.Logic.Tests
             var time = (TestTime) services.GetRequiredService<ITime>();
             var today = DateTime.Today;
             time.Today = today;
-            var holidays = new Holiday[]
+            var holidays = new []
             {
                 new Holiday {Day = today.AddDays(-2.0d)},
                 new Holiday {Day = today},
@@ -66,7 +65,7 @@ namespace Whol.Logic.Tests
             var time = (TestTime)services.GetRequiredService<ITime>();
             var today = DateTime.Today;
             time.Today = today;
-            var holidays = new Holiday[]
+            var holidays = new []
             {
                 new Holiday {Day = today.AddDays(-2.0d)},
                 new Holiday {Day = today.AddDays((1.0d))},
@@ -109,7 +108,7 @@ namespace Whol.Logic.Tests
             var today = DateTime.Today;
             time.Today = today;
             var storage = (TestStorage)services.GetRequiredService<IStorage>();
-            var holidays = new Holiday[]
+            var holidays = new []
             {
                 new Holiday {Day = today.AddDays(-2.0d)},
             };
