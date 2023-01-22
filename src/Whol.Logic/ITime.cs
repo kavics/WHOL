@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace Whol.Logic
+namespace Whol.Logic;
+
+public interface ITime
 {
-    public interface ITime
-    {
-        DateTime Now { get; }
-        DateTime Today { get; }
-    }
+    DateTime Now { get; }
+    DateTime Today { get; }
 }

@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace Whol.Logic
+namespace Whol.Logic;
+
+public interface IHolidayController
 {
-    public interface IHolidayController
-    {
-        bool IsHoliday { get; }
-        string HolidayDescription { get; }
-        void SetHolidays(IEnumerable<Holiday> holidays);
-    }
+    bool IsHoliday { get; }
+    string? HolidayDescription { get; }
+    void SetHolidays(IEnumerable<Holiday> holidays);
 }
