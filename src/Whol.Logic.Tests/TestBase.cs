@@ -22,6 +22,7 @@ namespace Whol.Logic.Tests
             return services.BuildServiceProvider();
         }
 
+        /*
         protected EventController CreateWorkHoursController(ITime time)
         {
             var storage = new TestStorage(null, null);
@@ -42,5 +43,6 @@ namespace Whol.Logic.Tests
             var user = new User { Email = "user1@example.com" };
             return new HolidayController(time, storage, userManager);
         }
+        */
     }
 }

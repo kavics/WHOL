@@ -20,7 +20,12 @@ namespace Whol.Logic.Tests.Implementations
         public bool EventsSaved { get; set; }
         public bool HolidaysSaved { get; set; }
 
-        public TestStorage(IEnumerable<Event> lastDayEvents, IEnumerable<Holiday> holidays)
+        public TestStorage()
+        {
+
+        }
+
+        public void Initialize(IEnumerable<Event> lastDayEvents, IEnumerable<Holiday> holidays)
         {
             _lastDayEvents = lastDayEvents;
             _holidays = holidays;

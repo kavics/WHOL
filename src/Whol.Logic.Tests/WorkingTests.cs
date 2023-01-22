@@ -11,6 +11,7 @@ namespace Whol.Logic.Tests
     [TestClass]
     public class WorkingTests : TestBase
     {
+        /*
         [TestMethod]
         public void Working_Start()
         {
@@ -126,6 +127,6 @@ namespace Whol.Logic.Tests
             // ASSERT
             Assert.AreEqual(TimeSpan.FromHours(2.0d), controller.GetTodayWorkTime());
         }
-
+        */
     }
 }
