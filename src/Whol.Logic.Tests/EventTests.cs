@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Whol.Logic.Tests.Implementations;
@@ -18,25 +15,21 @@ namespace Whol.Logic.Tests
         public void Events_Loaded()
         {
             var services = GetServices();
-            var time = (TestTime)services.GetRequiredService<ITime>();
             var storage = (TestStorage)services.GetRequiredService<IStorage>();
-            storage.Initialize(null, null);
 
             // ACTION
-            var controller = services.GetRequiredService<IEventController>();
+            var _ = services.GetRequiredService<IEventController>();
 
             // ASSERT
             Assert.IsTrue(storage.EventsLoaded);
         }
-        /*
         [TestMethod]
         public void Events_LoadEmpty()
         {
-            var time = new TestTime();
-            var storage = new TestStorage(null, null);
+            var services = GetServices();
 
             // ACTION
-            var controller = CreateWorkHoursController(time, storage);
+            var controller = services.GetRequiredService<IEventController>();
 
             // ASSERT
             Assert.IsFalse(controller.IsWorking);
@@ -46,18 +39,17 @@ namespace Whol.Logic.Tests
         public void Events_LoadEmptyToday()
         {
             var time0 = DateTime.Today;
-
-            var lastDayEvents = new Event[]
+            var lastDayEvents = new []
             {
                 new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
                 new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
             };
-
-            var time = new TestTime();
-            var storage = new TestStorage(lastDayEvents, null);
+            var services = GetServices();
+            var storage = (TestStorage)services.GetRequiredService<IStorage>();
+            storage.Initialize(lastDayEvents, null);
 
             // ACTION
-            var controller = CreateWorkHoursController(time, storage);
+            var controller = services.GetRequiredService<IEventController>();
 
             // ASSERT
             Assert.IsFalse(controller.IsWorking);
@@ -67,19 +59,21 @@ namespace Whol.Logic.Tests
         public void Events_LoadStarted()
         {
             var time0 = DateTime.Today;
-            var lastDayEvents = new Event[]
+            var lastDayEvents = new []
             {
                 new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
                 new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
                 new Event {Time = time0.AddMinutes(1.0d), EventType = EventType.Start},
             };
+            var services = GetServices();
+            var time = (TestTime)services.GetRequiredService<ITime>();
+            var storage = (TestStorage)services.GetRequiredService<IStorage>();
+            storage.Initialize(lastDayEvents, null);
 
-            var time = new TestTime();
             time.Now = time0.AddMinutes(2.0d);
-            var storage = new TestStorage(lastDayEvents, null);
 
             // ACTION
-            var controller = CreateWorkHoursController(time, storage);
+            var controller = services.GetRequiredService<IEventController>();
 
             // ASSERT
             Assert.IsTrue(controller.IsWorking);
@@ -89,8 +83,7 @@ namespace Whol.Logic.Tests
         public void Events_LoadStopped()
         {
             var time0 = DateTime.Today;
-
-            var lastDayEvents = new Event[]
+            var lastDayEvents = new []
             {
                 new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
                 new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
@@ -98,12 +91,15 @@ namespace Whol.Logic.Tests
                 new Event {Time = time0.AddMinutes(2.0d), EventType = EventType.Stop},
             };
 
-            var time = new TestTime();
+            var services = GetServices();
+            var time = (TestTime)services.GetRequiredService<ITime>();
+            var storage = (TestStorage)services.GetRequiredService<IStorage>();
+            storage.Initialize(lastDayEvents, null);
+
             time.Now = time0.AddMinutes(3.0d);
-            var storage = new TestStorage(lastDayEvents, null);
 
             // ACTION
-            var controller = CreateWorkHoursController(time, storage);
+            var controller = services.GetRequiredService<IEventController>();
 
             // ASSERT
             Assert.IsFalse(controller.IsWorking);
@@ -114,8 +110,7 @@ namespace Whol.Logic.Tests
         public void Events_LoadToday()
         {
             var time0 = DateTime.Today;
-
-            var lastDayEvents = new Event[]
+            var lastDayEvents = new []
             {
                 new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
                 new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
@@ -124,12 +119,12 @@ namespace Whol.Logic.Tests
                 new Event {Time = time0.AddMinutes(4.0d), EventType = EventType.Start},
                 new Event {Time = time0.AddMinutes(8.0d), EventType = EventType.Stop},
             };
-
-            var time = new TestTime();
-            var storage = new TestStorage(lastDayEvents, null);
+            var services = GetServices();
+            var storage = (TestStorage)services.GetRequiredService<IStorage>();
+            storage.Initialize(lastDayEvents, null);
 
             // ACTION
-            var controller = CreateWorkHoursController(time, storage);
+            var controller = services.GetRequiredService<IEventController>();
 
             // ASSERT
             Assert.AreEqual(TimeSpan.FromMinutes(5.0d), controller.GetTodayWorkTime());
@@ -138,9 +133,9 @@ namespace Whol.Logic.Tests
         [TestMethod]
         public void Events_SaveStart()
         {
-            var time = new TestTime { Now = DateTime.Now };
-            var storage = new TestStorage(null, null);
-            var controller = CreateWorkHoursController(time, storage);
+            var services = GetServices();
+            var storage = (TestStorage)services.GetRequiredService<IStorage>();
+            var controller = services.GetRequiredService<IEventController>();
 
             // ACTION
             controller.StartWork();
@@ -151,11 +146,12 @@ namespace Whol.Logic.Tests
         [TestMethod]
         public void Events_SaveStop()
         {
+            var services = GetServices();
+            var time = (TestTime) services.GetRequiredService<ITime>();
+            var storage = (TestStorage)services.GetRequiredService<IStorage>();
+            var controller = services.GetRequiredService<IEventController>();
             var time0 = DateTime.Today;
             var time1 = time0.AddMinutes(3.0d);
-            var time = new TestTime { Now = time0 };
-            var storage = new TestStorage(null, null);
-            var controller = CreateWorkHoursController(time, storage);
             controller.StartWork();
             time.Now = time1;
             storage.EventsSaved = false;
@@ -169,11 +165,13 @@ namespace Whol.Logic.Tests
         [TestMethod]
         public void Events_SaveOnePeriod()
         {
+            var services = GetServices();
+            var time = (TestTime)services.GetRequiredService<ITime>();
+            var storage = (TestStorage)services.GetRequiredService<IStorage>();
+            var controller = services.GetRequiredService<IEventController>();
+
             var time0 = DateTime.Today;
             var time1 = time0.AddMinutes(3.0d);
-            var time = new TestTime();
-            var storage = new TestStorage(null, null);
-            var controller = CreateWorkHoursController(time, storage);
             storage.EventsSaved = false;
 
             // ACTION
@@ -194,9 +192,9 @@ namespace Whol.Logic.Tests
         [TestMethod]
         public void Events_StartTask()
         {
-            var time = new TestTime { Now = DateTime.Now };
-            var storage = new TestStorage(null, null);
-            var controller = CreateWorkHoursController(time, storage);
+            var services = GetServices();
+            var storage = (TestStorage)services.GetRequiredService<IStorage>();
+            var controller = services.GetRequiredService<IEventController>();
 
             // ACTION
             controller.StartWork("Task1");
@@ -209,20 +207,22 @@ namespace Whol.Logic.Tests
         [TestMethod]
         public void Events_LoadStartedTask()
         {
+            var services = GetServices();
+            var time = (TestTime)services.GetRequiredService<ITime>();
+            var storage = (TestStorage)services.GetRequiredService<IStorage>();
             var time0 = DateTime.Today;
-            var lastDayEvents = new Event[]
+            var lastDayEvents = new []
             {
                 new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
                 new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
                 new Event {Time = time0.AddMinutes(1.0d), EventType = EventType.Start, Task = "Task1"},
             };
+            storage.Initialize(lastDayEvents, null);
 
-            var time = new TestTime();
             time.Now = time0.AddMinutes(2.0d);
-            var storage = new TestStorage(lastDayEvents, null);
 
             // ACTION
-            var controller = CreateWorkHoursController(time, storage);
+            var controller = services.GetRequiredService<IEventController>();
 
             // ASSERT
             Assert.IsTrue(controller.IsWorking);
@@ -232,8 +232,11 @@ namespace Whol.Logic.Tests
         [TestMethod]
         public void Events_LoadEventList()
         {
+            var services = GetServices();
+            var time = (TestTime)services.GetRequiredService<ITime>();
+            var storage = (TestStorage)services.GetRequiredService<IStorage>();
             var time0 = DateTime.Today;
-            var lastDayEvents = new Event[]
+            var lastDayEvents = new []
             {
                 new Event {Time = time0.AddMinutes(-8.0d), EventType = EventType.Start, Task = "Task1"},
                 new Event {Time = time0.AddMinutes(-7.0d), EventType = EventType.Stop},
@@ -245,13 +248,12 @@ namespace Whol.Logic.Tests
                 new Event {Time = time0.AddMinutes(-1.0d), EventType = EventType.Stop},
                 new Event {Time = time0.AddMinutes(1.0d), EventType = EventType.Start, Task = "Task3"},
             };
+            storage.Initialize(lastDayEvents, null);
 
-            var time = new TestTime();
             time.Now = time0.AddMinutes(2.0d);
-            var storage = new TestStorage(lastDayEvents, null);
 
             // ACTION
-            var controller = CreateWorkHoursController(time, storage);
+            var controller = services.GetRequiredService<IEventController>();
 
             // ASSERT
             Assert.AreEqual("Task3", controller.CurrentTask);
@@ -260,8 +262,11 @@ namespace Whol.Logic.Tests
         [TestMethod]
         public void Events_StartNewInEventList()
         {
+            var services = GetServices();
+            var time = (TestTime)services.GetRequiredService<ITime>();
+            var storage = (TestStorage)services.GetRequiredService<IStorage>();
             var time0 = DateTime.Today;
-            var lastDayEvents = new Event[]
+            var lastDayEvents = new []
             {
                 new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start, Task = "Task1"},
                 new Event {Time = time0.AddMinutes(-9.0d), EventType = EventType.Stop},
@@ -274,11 +279,9 @@ namespace Whol.Logic.Tests
                 new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Start, Task = "Task3"},
                 new Event {Time = time0.AddMinutes(-1.0d), EventType = EventType.Stop},
             };
-
-            var time = new TestTime();
+            storage.Initialize(lastDayEvents, null);
             time.Now = time0.AddMinutes(2.0d);
-            var storage = new TestStorage(lastDayEvents, null);
-            var controller = CreateWorkHoursController(time, storage);
+            var controller = services.GetRequiredService<IEventController>();
 
             // ACTION
             controller.StartWork("Task4");
@@ -290,8 +293,11 @@ namespace Whol.Logic.Tests
         [TestMethod]
         public void Events_StartOlderInEventList()
         {
+            var services = GetServices();
+            var time = (TestTime)services.GetRequiredService<ITime>();
+            var storage = (TestStorage)services.GetRequiredService<IStorage>();
             var time0 = DateTime.Today;
-            var lastDayEvents = new Event[]
+            var lastDayEvents = new []
             {
                 new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start, Task = "Task1"},
                 new Event {Time = time0.AddMinutes(-9.0d), EventType = EventType.Stop},
@@ -304,11 +310,9 @@ namespace Whol.Logic.Tests
                 new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Start, Task = "Task3"},
                 new Event {Time = time0.AddMinutes(-1.0d), EventType = EventType.Stop},
             };
-
-            var time = new TestTime();
+            storage.Initialize(lastDayEvents, null);
             time.Now = time0.AddMinutes(2.0d);
-            var storage = new TestStorage(lastDayEvents, null);
-            var controller = CreateWorkHoursController(time, storage);
+            var controller = services.GetRequiredService<IEventController>();
 
             // ACTION
             controller.StartWork("Task2");
@@ -317,6 +321,5 @@ namespace Whol.Logic.Tests
             Assert.AreEqual("Task2", controller.CurrentTask);
             Assert.AreEqual("Task1,Task3,Task2", string.Join(",", controller.Tasks));
         }
-        */
     }
 }
