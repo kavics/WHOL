@@ -1,7 +1,6 @@
-﻿namespace Whol.Logic
+﻿namespace Whol.Logic;
+
+public class User
 {
-    public class User
-    {
-        public string Email { get; set; }
-    }
+    public string Email { get; set; }
 }

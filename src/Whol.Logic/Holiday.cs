@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace Whol.Logic
+namespace Whol.Logic;
+
+public class Holiday
 {
-    public class Holiday
-    {
-        public DateTime Day { get; set; }
-        public string Description { get; set; }
-    }
+    public DateTime Day { get; set; }
+    public string Description { get; set; }
 }

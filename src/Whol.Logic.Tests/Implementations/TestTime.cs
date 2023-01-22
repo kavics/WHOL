@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Whol.Logic.Tests.Implementations
+namespace Whol.Logic.Tests.Implementations;
+
+/// <summary>
+/// ITime stub
+/// </summary>
+[ExcludeFromCodeCoverage]
+class TestTime : ITime
 {
-    /// <summary>
-    /// ITime stub
-    /// </summary>
-    [ExcludeFromCodeCoverage]
-    class TestTime : ITime
-    {
-        public DateTime Now { get; set; }
-        public DateTime Today { get; set; }
-    }
+    public DateTime Now { get; set; }
+    public DateTime Today { get; set; }
 }

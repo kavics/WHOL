@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Whol.Logic
+namespace Whol.Logic;
+
+public interface IStorage
 {
-    public interface IStorage
-    {
-        IEnumerable<Event> LoadEvents();
-        IEnumerable<Holiday> LoadHolidays();
+    IEnumerable<Event> LoadEvents();
+    IEnumerable<Holiday> LoadHolidays();
 
-        void SaveEvents(IEnumerable<Event> events);
-        void SaveHolidays(IEnumerable<Holiday> holidays);
-    }
+    void SaveEvents(IEnumerable<Event> events);
+    void SaveHolidays(IEnumerable<Holiday> holidays);
 }
