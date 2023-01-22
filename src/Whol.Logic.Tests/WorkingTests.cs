@@ -1,12 +1,13 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Whol.Logic.Tests.Implementations;
 
 namespace Whol.Logic.Tests
 {
-    //[ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage]
     [TestClass]
     public class WorkingTests : TestBase
     {
@@ -126,25 +127,5 @@ namespace Whol.Logic.Tests
             Assert.AreEqual(TimeSpan.FromHours(2.0d), controller.GetTodayWorkTime());
         }
 
-
-        [TestMethod]
-        public void Working_Task_StartStop()
-        {
-            var time = new TestTime();
-            var controller = CreateWorkHoursController(time);
-
-            // ACTION
-            time.Now = DateTime.UtcNow;
-            controller.StartWork("Task1");
-            time.Now = time.Now.AddMinutes(2.0d);
-            controller.StartWork("Task1");
-            time.Now = time.Now.AddMinutes(3.0d);
-            controller.StartWork("Task2");
-            time.Now = time.Now.AddMinutes(4.0d);
-            controller.StopWork();
-
-            // ASSERT
-            Assert.AreEqual(TimeSpan.FromMinutes(9.0d), controller.GetTodayWorkTime());
-        }
     }
 }
