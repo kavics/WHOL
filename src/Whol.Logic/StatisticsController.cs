@@ -17,7 +17,7 @@ public class StatisticsController : IStatisticsController
         var summaries = new Dictionary<string, TaskSummary>();
 
         var events = _storage.LoadEvents();
-        Event startEvent = null;
+        Event? startEvent = null;
         foreach (var @event in events)
         {
             switch (@event.EventType)
@@ -35,7 +35,7 @@ public class StatisticsController : IStatisticsController
         return summaries.Values;
     }
 
-    private void CalculateTaskPeriod(Event startEvent, DateTime endTime, Dictionary<string, TaskSummary> summaries)
+    private void CalculateTaskPeriod(Event? startEvent, DateTime endTime, Dictionary<string, TaskSummary> summaries)
     {
         if (startEvent == null)
             return;

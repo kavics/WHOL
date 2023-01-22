@@ -6,9 +6,9 @@ namespace Whol.Logic;
 public interface IEventController
 {
     bool IsWorking { get; }
-    string CurrentTask { get; }
+    string? CurrentTask { get; }
     IEnumerable<string> Tasks { get; }
-    void StartWork(string task = null);
+    void StartWork(string? task = null);
     void StopWork();
     TimeSpan GetTodayWorkTime();
 }

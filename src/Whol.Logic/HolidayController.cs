@@ -37,7 +37,7 @@ public class HolidayController : IHolidayController
     }
 
     public bool IsHoliday { get; private set; }
-    public string HolidayDescription{ get; private set; }
+    public string? HolidayDescription{ get; private set; }
     public void SetHolidays(IEnumerable<Holiday> holidays)
     {
         var array = holidays as Holiday[] ?? holidays.ToArray();

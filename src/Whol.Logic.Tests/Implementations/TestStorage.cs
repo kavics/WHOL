@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Whol.Logic.Tests.Implementations;
@@ -9,15 +10,15 @@ namespace Whol.Logic.Tests.Implementations;
 [ExcludeFromCodeCoverage]
 public class TestStorage : IStorage
 {
-    private IEnumerable<Event> _lastDayEvents;
-    private IEnumerable<Holiday> _holidays;
+    private IEnumerable<Event>? _lastDayEvents;
+    private IEnumerable<Holiday>? _holidays;
 
     public bool EventsLoaded { get; set; }
     public bool HolidaysLoaded { get; set; }
     public bool EventsSaved { get; set; }
     public bool HolidaysSaved { get; set; }
 
-    public void Initialize(IEnumerable<Event> lastDayEvents, IEnumerable<Holiday> holidays)
+    public void Initialize(IEnumerable<Event>? lastDayEvents, IEnumerable<Holiday>? holidays)
     {
         _lastDayEvents = lastDayEvents;
         _holidays = holidays;
@@ -26,13 +27,13 @@ public class TestStorage : IStorage
     public IEnumerable<Event> LoadEvents()
     {
         EventsLoaded = true;
-        return _lastDayEvents ?? new Event[0];
+        return _lastDayEvents ?? Array.Empty<Event>();
     }
 
     public IEnumerable<Holiday> LoadHolidays()
     {
         HolidaysLoaded = true;
-        return _holidays ?? new Holiday[0];
+        return _holidays ?? Array.Empty<Holiday>();
     }
 
     public void SaveEvents(IEnumerable<Event> events)

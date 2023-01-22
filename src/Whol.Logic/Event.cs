@@ -8,5 +8,5 @@ public class Event
 {
     public DateTime Time { get; set; }      // UTC!
     public EventType EventType { get; set; }
-    public string Task { get; set; }
+    public string? Task { get; set; }
 }

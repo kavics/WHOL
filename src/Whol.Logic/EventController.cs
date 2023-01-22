@@ -6,15 +6,16 @@ namespace Whol.Logic;
 
 public class EventController : IEventController
 {
-    private List<Event> _events;
+    private List<Event>? _events;
 
     private TimeSpan _todayClosedWorkTime;
     private DateTime _lastStart;
 
     private readonly ITime _time;
     private readonly IStorage _storage;
+    // ReSharper disable once NotAccessedField.Local
     private readonly IUserManager _userManager;
-    private List<string> _taskList;
+    private List<string>? _taskList;
 
     public EventController(ITime time, IStorage storage, IUserManager userManager)
     {
@@ -25,14 +26,14 @@ public class EventController : IEventController
     }
     private void Initialize()
     {
-        var events = _storage.LoadEvents().ToList();
+        _events = _storage.LoadEvents().ToList();
 
         var lastStart = DateTime.MinValue;
         var closedTime = TimeSpan.Zero;
-        Event activeEvent = null;
-        var tasks = new List<string>();
+        Event? activeEvent = null;
+        _taskList = new List<string>();
 
-        foreach (var @event in events)
+        foreach (var @event in _events)
         {
             var today = DateTime.Today;
 
@@ -41,7 +42,7 @@ public class EventController : IEventController
                 case EventType.Start:
                     lastStart = @event.Time;
                     activeEvent = @event;
-                    AddTask(tasks, @event.Task);
+                    AddTask(@event.Task);
                     break;
                 case EventType.Stop:
                     if(@event.Time >= today)
@@ -53,39 +54,37 @@ public class EventController : IEventController
             }
         }
 
-        _events = events;
         _todayClosedWorkTime = closedTime;
         _lastStart = lastStart;
         IsWorking = activeEvent != null;
         CurrentTask = activeEvent?.Task;
-        _taskList = tasks;
     }
 
-    private void AddTask(List<string> tasks, string task)
+    private void AddTask(string? task)
     {
-        if (task != null)
-        {
-            if (tasks.Contains(task))
-                tasks.Remove(task);
-            tasks.Add(task);
-        }
+        if (task == null)
+            return;
+        if (_taskList == null)
+            _taskList = new List<string>();
+        if (_taskList.Contains(task))
+            _taskList.Remove(task);
+        _taskList.Add(task);
     }
 
     public bool IsWorking { get; private set; }
-    public string CurrentTask { get; private set; }
+    public string? CurrentTask { get; private set; }
 
-    public IEnumerable<string> Tasks => _taskList;
+    public IEnumerable<string> Tasks => _taskList ?? (IEnumerable<string>)Array.Empty<string>();
 
-    public void StartWork(string task = null)
+    public void StartWork(string? task = null)
     {
         if(IsWorking)
             StopWork();
         _lastStart = _time.Now;
         IsWorking = true;
         CurrentTask = task;
-        AddTask(_taskList, task);
-        _events.Add(new Event{Time = _time.Now, EventType = EventType.Start, Task = task});
-        _storage.SaveEvents(_events);
+        AddTask(task);
+        AddEvent(new Event{Time = _time.Now, EventType = EventType.Start, Task = task});
     }
 
     public void StopWork()
@@ -101,7 +100,14 @@ public class EventController : IEventController
             _todayClosedWorkTime += now - _lastStart;
         }
         IsWorking = false;
-        _events.Add(new Event { Time = now, EventType = EventType.Stop });
+        AddEvent(new Event { Time = now, EventType = EventType.Stop });
+    }
+
+    private void AddEvent(Event @event)
+    {
+        if(_events == null)
+            _events = new List<Event>();
+        _events.Add(@event);
         _storage.SaveEvents(_events);
     }
 

@@ -8,7 +8,7 @@ namespace Whol.Logic.Tests;
 [ExcludeFromCodeCoverage]
 public abstract class TestBase
 {
-    protected IServiceProvider GetServices(Action<IServiceCollection> configureServices = null)
+    protected IServiceProvider GetServices(Action<IServiceCollection>? configureServices = null)
     {
         var services = new ServiceCollection()
                 .AddSingleton<ITime, TestTime>()
