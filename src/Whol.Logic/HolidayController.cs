@@ -12,14 +12,12 @@ namespace Whol.Logic
         private readonly ITime _time;
         private readonly IStorage _storage;
         private readonly IUserManager _userManager;
-        private readonly User _user;
 
-        public HolidayController(ITime time, IStorage storage, IUserManager userManager, User user)
+        public HolidayController(ITime time, IStorage storage, IUserManager userManager)
         {
             _time = time;
             _storage = storage;
             _userManager = userManager;
-            _user = user;
             Initialize(_storage.LoadHolidays());
         }
 
