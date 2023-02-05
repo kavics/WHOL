@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Whol.Logic;
 
 public interface IStorage
 {
     IEnumerable<Event> LoadEvents();
-    IEnumerable<Holiday> LoadHolidays();
-
     void SaveEvents(IEnumerable<Event> events);
+    void SaveOlderEvents(IEnumerable<Event> olderEvents);
+    void SummarizeEvents(DateTime starTime, DateTime endTime);
+
+    IEnumerable<Holiday> LoadHolidays();
     void SaveHolidays(IEnumerable<Holiday> holidays);
 }

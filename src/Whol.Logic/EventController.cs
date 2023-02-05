@@ -80,6 +80,8 @@ public class EventController : IEventController
     {
         if(IsWorking)
             StopWork();
+        if (_lastStart <= _time.Today)
+            _todayClosedWorkTime = TimeSpan.Zero;
         _lastStart = _time.Now;
         IsWorking = true;
         CurrentTask = task;
@@ -93,6 +95,11 @@ public class EventController : IEventController
 
         if (_lastStart < now.Date)
         {
+            // 2023-01-02 00:00:00.00000
+            var start = new DateTime(now.Year, now.Month, now.Day);
+            var end = start.AddMilliseconds(-1.0);
+            AddEvent(new Event { Time = end, EventType = EventType.Stop });
+            AddEvent(new Event { Time = start, EventType = EventType.Start, Task = CurrentTask });
             _todayClosedWorkTime = now - now.Date;
         }
         else
@@ -105,21 +112,27 @@ public class EventController : IEventController
 
     private void AddEvent(Event @event)
     {
-        if(_events == null)
-            _events = new List<Event>();
+        _events ??= new List<Event>();
         _events.Add(@event);
+        var today = _time.Today;
+        var olderEvents = _events.Where(x => x.Time < today).ToList();
+        _events = _events.Where(x => x.Time >= today).ToList();
+        if (olderEvents.Any())
+        {
+            _storage.SaveOlderEvents(olderEvents);
+            _storage.SummarizeEvents(olderEvents.First().Time, olderEvents.Last().Time);
+        }
         _storage.SaveEvents(_events);
     }
 
     public TimeSpan GetTodayWorkTime()
     {
         if (!IsWorking)
-            return this._todayClosedWorkTime;
+            return _todayClosedWorkTime;
 
         var now = _time.Now;
         return _lastStart < now.Date 
             ? now - now.Date 
-            : this._todayClosedWorkTime + (now - this._lastStart);
+            : _todayClosedWorkTime + (now - _lastStart);
     }
-
 }

@@ -29,7 +29,7 @@ public class WorkingTests : TestBase
         var time = (TestTime)services.GetRequiredService<ITime>();
         var controller = services.GetRequiredService<IEventController>();
 
-        time.Now = DateTime.UtcNow;
+        time.Now = DateTime.Today.AddHours(8.0d);
         controller.StartWork();
         time.Now = time.Now.AddMinutes(1.0d);
 
@@ -47,7 +47,7 @@ public class WorkingTests : TestBase
         var controller = services.GetRequiredService<IEventController>();
 
         // ACTION
-        time.Now = DateTime.UtcNow;
+        time.Now = DateTime.Today.AddHours(8.0d);
         controller.StartWork();
         time.Now = time.Now.AddMinutes(1.0d);
         controller.StopWork();
@@ -63,7 +63,7 @@ public class WorkingTests : TestBase
         var controller = services.GetRequiredService<IEventController>();
 
         // ACTION
-        time.Now = DateTime.UtcNow;
+        time.Now = DateTime.Today.AddHours(8.0d);
         controller.StartWork();
         time.Now = time.Now.AddMinutes(1.0d);
         controller.StopWork();
@@ -83,7 +83,7 @@ public class WorkingTests : TestBase
         var controller = services.GetRequiredService<IEventController>();
 
         // ACTION
-        time.Now = DateTime.UtcNow;
+        time.Now = DateTime.Today.AddHours(8.0d);
         controller.StartWork();
 
         // ASSERT
@@ -103,7 +103,7 @@ public class WorkingTests : TestBase
         var controller = services.GetRequiredService<IEventController>();
 
         // ACTION
-        time.Now = DateTime.UtcNow;
+        time.Now = DateTime.Today.AddHours(8.0d);
         controller.StartWork();
         time.Now = time.Now.AddMinutes(2.0d);
         controller.StartWork();

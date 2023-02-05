@@ -10,5 +10,5 @@ namespace Whol.Logic.Tests.Implementations;
 class TestTime : ITime
 {
     public DateTime Now { get; set; }
-    public DateTime Today { get; set; }
+    public DateTime Today => new DateTime(Now.Year, Now.Month, Now.Day);
 }

@@ -42,7 +42,7 @@ public class HolidayTests : TestBase
         var services = GetServices();
         var time = (TestTime) services.GetRequiredService<ITime>();
         var today = DateTime.Today;
-        time.Today = today;
+        time.Now = today;
         var holidays = new []
         {
             new Holiday {Day = today.AddDays(-2.0d)},
@@ -64,7 +64,7 @@ public class HolidayTests : TestBase
         var services = GetServices();
         var time = (TestTime)services.GetRequiredService<ITime>();
         var today = DateTime.Today;
-        time.Today = today;
+        time.Now = today;
         var holidays = new []
         {
             new Holiday {Day = today.AddDays(-2.0d)},
@@ -86,7 +86,7 @@ public class HolidayTests : TestBase
         var services = GetServices();
         var time = (TestTime)services.GetRequiredService<ITime>();
         var today = DateTime.Today;
-        time.Today = today;
+        time.Now = today;
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
         var controller = (HolidayController)services.GetRequiredService<IHolidayController>();
 
@@ -106,7 +106,7 @@ public class HolidayTests : TestBase
         var services = GetServices();
         var time = (TestTime)services.GetRequiredService<ITime>();
         var today = DateTime.Today;
-        time.Today = today;
+        time.Now = today;
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
         var holidays = new []
         {
@@ -131,7 +131,7 @@ public class HolidayTests : TestBase
         var services = GetServices();
         var time = (TestTime)services.GetRequiredService<ITime>();
         var today = DateTime.Today;
-        time.Today = today;
+        time.Now = today;
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
         var holidays = new[]
         {
@@ -159,7 +159,7 @@ public class HolidayTests : TestBase
         var services = GetServices();
         var time = (TestTime)services.GetRequiredService<ITime>();
         var today = DateTime.Today;
-        time.Today = today;
+        time.Now = today;
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
         var holidays = new[]
         {
@@ -187,7 +187,7 @@ public class HolidayTests : TestBase
         var services = GetServices();
         var time = (TestTime)services.GetRequiredService<ITime>();
         var today = DateTime.Today;
-        time.Today = today;
+        time.Now = today;
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
         var holidays = new[]
         {
@@ -212,7 +212,7 @@ public class HolidayTests : TestBase
         var services = GetServices();
         var time = (TestTime)services.GetRequiredService<ITime>();
         var today = DateTime.Today;
-        time.Today = today;
+        time.Now = today;
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
         var holidays = new[]
         {
@@ -241,7 +241,7 @@ public class HolidayTests : TestBase
         var services = GetServices();
         var time = (TestTime)services.GetRequiredService<ITime>();
         var today = DateTime.Today;
-        time.Today = today;
+        time.Now = today;
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
         var holidays = new[]
         {
@@ -262,7 +262,7 @@ public class HolidayTests : TestBase
         var services = GetServices();
         var time = (TestTime)services.GetRequiredService<ITime>();
         var today = DateTime.Today;
-        time.Today = today;
+        time.Now = today;
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
         var holidays = new[] { new Holiday { Day = today, Description = "Developers Day" } };
         storage.Initialize(null, holidays);
@@ -280,7 +280,7 @@ public class HolidayTests : TestBase
         var services = GetServices();
         var time = (TestTime)services.GetRequiredService<ITime>();
         var today = DateTime.Today;
-        time.Today = today;
+        time.Now = today;
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
         var holidays = new[] { new Holiday { Day = today, Description = "Developers Day" } };
         storage.Initialize(null, holidays);
@@ -304,7 +304,7 @@ public class HolidayTests : TestBase
         var services = GetServices();
         var time = (TestTime)services.GetRequiredService<ITime>();
         var today = DateTime.Today;
-        time.Today = today;
+        time.Now = today;
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
         var holidays = new[] { new Holiday { Day = today, Description = "initial" } };
         storage.Initialize(null, holidays);
