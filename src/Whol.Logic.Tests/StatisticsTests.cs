@@ -48,7 +48,7 @@ public class StatisticsTests : TestBase
     }
 
     [TestMethod]
-    public void Stat_SummarizeTasks_DayTransition_nowork()
+    public void Stat_SummarizeTasks_DayTransition_notwork()
     {
         var services = GetServices();
 

@@ -39,10 +39,13 @@ public class EventTests : TestBase
     public void Events_LoadEmptyToday()
     {
         var time0 = DateTime.Today;
-        var lastDayEvents = new []
+        var lastDayEvents = new[]
         {
-            new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
-            new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
+            new Day(time0.AddDays(1.0d), new[]
+            {
+                new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
+                new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
+            })
         };
         var services = GetServices();
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
@@ -59,16 +62,22 @@ public class EventTests : TestBase
     public void Events_LoadStarted()
     {
         var time0 = DateTime.Today;
-        var lastDayEvents = new []
+        var days = new[]
         {
-            new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
-            new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(1.0d), EventType = EventType.Start},
+            new Day(time0.AddDays(-1.0d), new[]
+            {
+                new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
+                new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
+            }),
+            new Day(time0.AddDays(-1.0d), new[]
+            {
+                new Event {Time = time0.AddMinutes(1.0d), EventType = EventType.Start},
+            }),
         };
         var services = GetServices();
         var time = (TestTime)services.GetRequiredService<ITime>();
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
-        storage.Initialize(lastDayEvents, null);
+        storage.Initialize(days, null);
 
         time.Now = time0.AddMinutes(2.0d);
 
@@ -83,18 +92,23 @@ public class EventTests : TestBase
     public void Events_LoadStopped()
     {
         var time0 = DateTime.Today;
-        var lastDayEvents = new []
+        var days = new[]
         {
-            new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
-            new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(1.0d), EventType = EventType.Start},
-            new Event {Time = time0.AddMinutes(2.0d), EventType = EventType.Stop},
+            new Day(time0.AddDays(-1.0d), new[]
+            {
+                new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
+                new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
+            }),
+            new Day(time0.AddDays(-1.0d), new[]
+            {
+                new Event {Time = time0.AddMinutes(1.0d), EventType = EventType.Start},
+                new Event {Time = time0.AddMinutes(2.0d), EventType = EventType.Stop},
+            }),
         };
-
         var services = GetServices();
         var time = (TestTime)services.GetRequiredService<ITime>();
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
-        storage.Initialize(lastDayEvents, null);
+        storage.Initialize(days, null);
 
         time.Now = time0.AddMinutes(3.0d);
 
@@ -110,18 +124,24 @@ public class EventTests : TestBase
     public void Events_LoadToday()
     {
         var time0 = DateTime.Today;
-        var lastDayEvents = new []
+        var days = new[]
         {
-            new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
-            new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(1.0d), EventType = EventType.Start},
-            new Event {Time = time0.AddMinutes(2.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(4.0d), EventType = EventType.Start},
-            new Event {Time = time0.AddMinutes(8.0d), EventType = EventType.Stop},
+            new Day(time0.AddDays(-1.0d), new[]
+            {
+                new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
+                new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
+            }),
+            new Day(time0.AddDays(-1.0d), new[]
+            {
+                new Event {Time = time0.AddMinutes(1.0d), EventType = EventType.Start},
+                new Event {Time = time0.AddMinutes(2.0d), EventType = EventType.Stop},
+                new Event {Time = time0.AddMinutes(4.0d), EventType = EventType.Start},
+                new Event {Time = time0.AddMinutes(8.0d), EventType = EventType.Stop},
+            }),
         };
         var services = GetServices();
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
-        storage.Initialize(lastDayEvents, null);
+        storage.Initialize(days, null);
 
         // ACTION
         var controller = services.GetRequiredService<IEventController>();
@@ -181,7 +201,8 @@ public class EventTests : TestBase
         controller.StopWork();
 
         // ASSERT
-        var events = storage.LoadEvents().ToArray();
+        var days = storage.LoadEvents().ToArray();
+        var events = days[0].GetEvents();
         Assert.AreEqual(2, events.Length);
         Assert.AreEqual(time0, events[0].Time);
         Assert.AreEqual(EventType.Start, events[0].EventType);
@@ -200,7 +221,7 @@ public class EventTests : TestBase
         controller.StartWork("Task1");
 
         // ASSERT
-        var lastEvent = storage.LoadEvents().Last();
+        var lastEvent = storage.LoadEvents().Last().GetEvents().Last();
         Assert.AreEqual(EventType.Start, lastEvent.EventType);
         Assert.AreEqual("Task1", lastEvent.Task);
     }
@@ -211,13 +232,20 @@ public class EventTests : TestBase
         var time = (TestTime)services.GetRequiredService<ITime>();
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
         var time0 = DateTime.Today;
-        var lastDayEvents = new []
+        var days = new[]
         {
-            new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
-            new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(1.0d), EventType = EventType.Start, Task = "Task1"},
+            new Day(time0.AddDays(-1.0d),new []
+            {
+                new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start},
+                new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Stop},
+            }),
+            new Day(time0,new []
+            {
+                new Event {Time = time0.AddMinutes(1.0d), EventType = EventType.Start, Task = "Task1"},
+            }),
         };
-        storage.Initialize(lastDayEvents, null);
+
+        storage.Initialize(days, null);
 
         time.Now = time0.AddMinutes(2.0d);
 
@@ -236,19 +264,25 @@ public class EventTests : TestBase
         var time = (TestTime)services.GetRequiredService<ITime>();
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
         var time0 = DateTime.Today;
-        var lastDayEvents = new []
+        var days = new[]
         {
-            new Event {Time = time0.AddMinutes(-8.0d), EventType = EventType.Start, Task = "Task1"},
-            new Event {Time = time0.AddMinutes(-7.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(-6.0d), EventType = EventType.Start, Task = "Task2"},
-            new Event {Time = time0.AddMinutes(-5.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(-4.0d), EventType = EventType.Start, Task = "Task1"},
-            new Event {Time = time0.AddMinutes(-3.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Start, Task = "Task1"},
-            new Event {Time = time0.AddMinutes(-1.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(1.0d), EventType = EventType.Start, Task = "Task3"},
+            new Day(time0.AddDays(-1.0d), new[]
+            {
+                new Event {Time = time0.AddMinutes(-8.0d), EventType = EventType.Start, Task = "Task1"},
+                new Event {Time = time0.AddMinutes(-7.0d), EventType = EventType.Stop},
+                new Event {Time = time0.AddMinutes(-6.0d), EventType = EventType.Start, Task = "Task2"},
+                new Event {Time = time0.AddMinutes(-5.0d), EventType = EventType.Stop},
+                new Event {Time = time0.AddMinutes(-4.0d), EventType = EventType.Start, Task = "Task1"},
+                new Event {Time = time0.AddMinutes(-3.0d), EventType = EventType.Stop},
+                new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Start, Task = "Task1"},
+                new Event {Time = time0.AddMinutes(-1.0d), EventType = EventType.Stop},
+            }),
+            new Day(time0, new[]
+            {
+                new Event {Time = time0.AddMinutes(1.0d), EventType = EventType.Start, Task = "Task3"},
+            }),
         };
-        storage.Initialize(lastDayEvents, null);
+        storage.Initialize(days, null);
 
         time.Now = time0.AddMinutes(2.0d);
 
@@ -266,20 +300,23 @@ public class EventTests : TestBase
         var time = (TestTime)services.GetRequiredService<ITime>();
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
         var time0 = DateTime.Today;
-        var lastDayEvents = new []
+        var days = new[]
         {
-            new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start, Task = "Task1"},
-            new Event {Time = time0.AddMinutes(-9.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(-8.0d), EventType = EventType.Start, Task = "Task2"},
-            new Event {Time = time0.AddMinutes(-7.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(-6.0d), EventType = EventType.Start, Task = "Task1"},
-            new Event {Time = time0.AddMinutes(-5.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(-4.0d), EventType = EventType.Start, Task = "Task1"},
-            new Event {Time = time0.AddMinutes(-3.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Start, Task = "Task3"},
-            new Event {Time = time0.AddMinutes(-1.0d), EventType = EventType.Stop},
+            new Day(time0.AddDays(-1.0d), new[]
+            {
+                new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start, Task = "Task1"},
+                new Event {Time = time0.AddMinutes(-9.0d), EventType = EventType.Stop},
+                new Event {Time = time0.AddMinutes(-8.0d), EventType = EventType.Start, Task = "Task2"},
+                new Event {Time = time0.AddMinutes(-7.0d), EventType = EventType.Stop},
+                new Event {Time = time0.AddMinutes(-6.0d), EventType = EventType.Start, Task = "Task1"},
+                new Event {Time = time0.AddMinutes(-5.0d), EventType = EventType.Stop},
+                new Event {Time = time0.AddMinutes(-4.0d), EventType = EventType.Start, Task = "Task1"},
+                new Event {Time = time0.AddMinutes(-3.0d), EventType = EventType.Stop},
+                new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Start, Task = "Task3"},
+                new Event {Time = time0.AddMinutes(-1.0d), EventType = EventType.Stop},
+            })
         };
-        storage.Initialize(lastDayEvents, null);
+        storage.Initialize(days, null);
         time.Now = time0.AddMinutes(2.0d);
         var controller = services.GetRequiredService<IEventController>();
 
@@ -297,20 +334,23 @@ public class EventTests : TestBase
         var time = (TestTime)services.GetRequiredService<ITime>();
         var storage = (TestStorage)services.GetRequiredService<IStorage>();
         var time0 = DateTime.Today;
-        var lastDayEvents = new []
+        var days = new[]
         {
-            new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start, Task = "Task1"},
-            new Event {Time = time0.AddMinutes(-9.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(-8.0d), EventType = EventType.Start, Task = "Task2"},
-            new Event {Time = time0.AddMinutes(-7.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(-6.0d), EventType = EventType.Start, Task = "Task1"},
-            new Event {Time = time0.AddMinutes(-5.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(-4.0d), EventType = EventType.Start, Task = "Task1"},
-            new Event {Time = time0.AddMinutes(-3.0d), EventType = EventType.Stop},
-            new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Start, Task = "Task3"},
-            new Event {Time = time0.AddMinutes(-1.0d), EventType = EventType.Stop},
+            new Day(time0.AddDays(-1.0d), new[]
+            {
+                new Event {Time = time0.AddMinutes(-10.0d), EventType = EventType.Start, Task = "Task1"},
+                new Event {Time = time0.AddMinutes(-9.0d), EventType = EventType.Stop},
+                new Event {Time = time0.AddMinutes(-8.0d), EventType = EventType.Start, Task = "Task2"},
+                new Event {Time = time0.AddMinutes(-7.0d), EventType = EventType.Stop},
+                new Event {Time = time0.AddMinutes(-6.0d), EventType = EventType.Start, Task = "Task1"},
+                new Event {Time = time0.AddMinutes(-5.0d), EventType = EventType.Stop},
+                new Event {Time = time0.AddMinutes(-4.0d), EventType = EventType.Start, Task = "Task1"},
+                new Event {Time = time0.AddMinutes(-3.0d), EventType = EventType.Stop},
+                new Event {Time = time0.AddMinutes(-2.0d), EventType = EventType.Start, Task = "Task3"},
+                new Event {Time = time0.AddMinutes(-1.0d), EventType = EventType.Stop},
+            })
         };
-        storage.Initialize(lastDayEvents, null);
+        storage.Initialize(days, null);
         time.Now = time0.AddMinutes(2.0d);
         var controller = services.GetRequiredService<IEventController>();
 

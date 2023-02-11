@@ -6,7 +6,7 @@ namespace Whol.Logic;
 
 public class EventController : IEventController
 {
-    private List<Event>? _events;
+    private List<Day>? _days;
 
     private TimeSpan _todayClosedWorkTime;
     private DateTime _lastStart;
@@ -26,14 +26,14 @@ public class EventController : IEventController
     }
     private void Initialize()
     {
-        _events = _storage.LoadEvents().ToList();
+        _days = _storage.LoadEvents().ToList();
 
         var lastStart = DateTime.MinValue;
         var closedTime = TimeSpan.Zero;
         Event? activeEvent = null;
         _taskList = new List<string>();
 
-        foreach (var @event in _events)
+        foreach (var @event in _days.SelectMany(d => d.GetEvents()))
         {
             var today = DateTime.Today;
 
@@ -80,7 +80,7 @@ public class EventController : IEventController
     {
         if(IsWorking)
             StopWork();
-        if (_lastStart <= _time.Today)
+        if (_lastStart < _time.Today)
             _todayClosedWorkTime = TimeSpan.Zero;
         _lastStart = _time.Now;
         IsWorking = true;
@@ -100,6 +100,7 @@ public class EventController : IEventController
             var end = start.AddMilliseconds(-1.0);
             AddEvent(new Event { Time = end, EventType = EventType.Stop });
             AddEvent(new Event { Time = start, EventType = EventType.Start, Task = CurrentTask });
+            _lastStart = start;
             _todayClosedWorkTime = now - now.Date;
         }
         else
@@ -112,17 +113,27 @@ public class EventController : IEventController
 
     private void AddEvent(Event @event)
     {
-        _events ??= new List<Event>();
-        _events.Add(@event);
-        var today = _time.Today;
-        var olderEvents = _events.Where(x => x.Time < today).ToList();
-        _events = _events.Where(x => x.Time >= today).ToList();
-        if (olderEvents.Any())
+        _days ??= new List<Day>();
+        var day = EnsureDay(@event);
+        day.AddEvent(@event);
+        _storage.SaveDay(day);
+    }
+
+    private Day EnsureDay(Event @event)
+    {
+        if(_days == null)
+            _days = new List<Day>();
+
+
+        var date = @event.Time.Date;
+        var day = _days.FirstOrDefault(d => d.Date == date);
+        if (day == null)
         {
-            _storage.SaveOlderEvents(olderEvents);
-            _storage.SummarizeEvents(olderEvents.First().Time, olderEvents.Last().Time);
+            _todayClosedWorkTime = TimeSpan.Zero;
+            day = new Day(date);
+            _days.Add(day);
         }
-        _storage.SaveEvents(_events);
+        return day;
     }
 
     public TimeSpan GetTodayWorkTime()

@@ -17,4 +17,9 @@ public class Event
         var t = Time.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CurrentCulture);
         return $"{t} {EventType} {Task ?? "null"}";
     }
+
+    public Event Clone()
+    {
+        return new Event {EventType = EventType, Time = Time, Task = Task};
+    }
 }

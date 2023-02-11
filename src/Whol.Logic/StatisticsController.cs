@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Whol.Logic;
 
@@ -18,7 +19,7 @@ public class StatisticsController : IStatisticsController
 
         var events = _storage.LoadEvents();
         Event? startEvent = null;
-        foreach (var @event in events)
+        foreach (var @event in events.SelectMany(d => d.GetEvents()))
         {
             switch (@event.EventType)
             {

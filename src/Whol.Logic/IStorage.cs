@@ -5,9 +5,8 @@ namespace Whol.Logic;
 
 public interface IStorage
 {
-    IEnumerable<Event> LoadEvents();
-    void SaveEvents(IEnumerable<Event> events);
-    void SaveOlderEvents(IEnumerable<Event> olderEvents);
+    IEnumerable<Day> LoadEvents();
+    void SaveDay(Day day);
     void SummarizeEvents(DateTime starTime, DateTime endTime);
 
     IEnumerable<Holiday> LoadHolidays();
